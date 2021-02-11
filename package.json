@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "description": "",
   "scripts": {
-    "test": "jest --colors"
+    "test": "jest --colors",
+    "build": "npx webpack"
   },
   "repository": {
     "type": "git",
