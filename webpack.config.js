@@ -32,7 +32,7 @@ module.exports = {
       template: path.resolve(__dirname, 'src', 'template.html'),
     }),
   ],
-  entry: './src/index.js',
+  entry: './index.js',
   target: 'web',
   output: {
     path: path.resolve(__dirname, 'dist'),
