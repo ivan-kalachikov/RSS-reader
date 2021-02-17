@@ -1,5 +1,7 @@
 // @ts-check
 
+import i18next from 'i18next';
+
 const submit = document.querySelector('.rss-form .btn');
 const inputUrl = document.querySelector('.form-control[name=url]');
 const modalTitle = document.querySelector('.modal-title');
@@ -23,7 +25,7 @@ const renderFeeds = (feeds) => {
   const feedsContainer = document.querySelector('.feeds');
   feedsContainer.innerHTML = '';
   const feedsTitle = document.createElement('h2');
-  feedsTitle.textContent = 'Feeds';
+  feedsTitle.textContent = i18next.t('ui.feedsTitle');
   const feedsList = document.createElement('ul');
   feedsList.classList.add('list-group', 'mb-5');
   feeds.forEach(({ title, description }) => {
@@ -47,7 +49,7 @@ const renderPosts = (posts) => {
   const postsContainer = document.querySelector('.posts');
   postsContainer.innerHTML = '';
   const postsTitle = document.createElement('h2');
-  postsTitle.textContent = 'Posts';
+  postsTitle.textContent = i18next.t('ui.postsTitle');
   const postsList = document.createElement('ul');
   postsList.classList.add('list-group');
   posts.forEach(({
@@ -65,7 +67,7 @@ const renderPosts = (posts) => {
     const postItemButton = document.createElement('button');
     postItemButton.setAttribute('type', 'button');
     postItemButton.classList.add('btn', 'btn-primary', 'btn-sm');
-    postItemButton.textContent = 'Preview';
+    postItemButton.textContent = i18next.t('ui.previewButton');
     postItemButton.dataset.id = postId;
     postItemButton.dataset.toggle = 'modal';
     postItemButton.dataset.target = '#modal';
@@ -93,7 +95,7 @@ const processStateHandler = (state) => {
     case 'added':
       inputUrl.value = '';
       inputUrl.focus();
-      updateFeedback('RSS added successfully', 'success');
+      updateFeedback(i18next.t('feedbackMessages.addedSuccessfully'), 'success');
       break;
     default:
       submit.disabled = false;

@@ -4,15 +4,46 @@ import 'bootstrap';
 import onChange from 'on-change';
 import * as yup from 'yup';
 import axios from 'axios';
+import i18next from 'i18next';
 import view from './view.js';
 import rssParser from './rss-parser.js';
+
+i18next.init({
+  lng: 'en',
+  debug: false,
+  resources: {
+    en: {
+      translation: {
+        feedbackMessages: {
+          alreadyExistRSS: 'Rss already exists',
+          addedSuccessfully: 'RSS added successfully',
+          invalidURL: 'this must be a valid URL',
+        },
+        ui: {
+          previewButton: 'Preview',
+          feedsTitle: 'Feeds',
+          postsTitle: 'Posts',
+        },
+      },
+    },
+  },
+});
+
+yup.setLocale({
+  mixed: {
+    notOneOf: i18next.t('feedbackMessages.alreadyExistRSS'),
+  },
+  string: {
+    url: i18next.t('feedbackMessages.invalidURL'),
+  },
+});
 
 const app = () => {
   const form = document.querySelector('.rss-form');
 
   const getFeedData = (url) => {
     const encodedURI = encodeURIComponent(url);
-    return axios.get(`https://hexlet-allorigins.herokuapp.com/get?url=${encodedURI}`);
+    return axios.get(`https://hexlet-allorigins.herokuapp.com/get?url=${encodedURI}&disableCache=true`);
   };
 
   const state = {
@@ -63,7 +94,7 @@ const app = () => {
   });
 
   const updateStateWithValidateUrl = (url) => {
-    const schema = yup.string().required().url().notOneOf(watchedState.feedUrls, 'Rss already exists');
+    const schema = yup.string().required().url().notOneOf(watchedState.feedUrls);
     watchedState.processState = 'validating';
     schema.validate(url)
       .then(() => {
