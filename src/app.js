@@ -61,9 +61,6 @@ const app = () => {
   };
 
   const watchedState = onChange(state, (path, value) => {
-    if (path === 'form.valid' || path === 'error') {
-      view(path, value);
-    }
     if (path === 'addUrl') {
       if (value === '') {
         return;
@@ -85,10 +82,7 @@ const app = () => {
           watchedState.addUrl = '';
         });
     }
-    if (path === 'processState') {
-      view(path, value);
-    }
-    if (path === 'data.feeds' || path === 'data.posts') {
+    if (path === 'data.feeds' || path === 'data.posts' || path === 'processState' || path === 'form.valid' || path === 'error') {
       view(path, value);
     }
   });
