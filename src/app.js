@@ -55,7 +55,7 @@ const app = () => {
       feeds: [],
       posts: [],
     },
-    error: [],
+    error: '',
     feedUrls: [],
     addUrl: '',
   };
