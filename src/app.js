@@ -61,6 +61,7 @@ const app = () => {
       feeds: [],
       posts: [],
     },
+    updatePostByTimer: false,
   };
 
   const updatePostsIfHaveUpdates = (posts, watchedState) => {
@@ -68,6 +69,25 @@ const app = () => {
     if (newPosts.length) {
       _.set(watchedState, 'data.posts', [...newPosts, ...watchedState.data.posts]);
     }
+  };
+
+  const updateFeedsTimer = (interval, watchedState) => {
+    setTimeout(() => {
+      const urls = [...watchedState.feedUrls];
+      const promises = urls.map((url) => getFeedData(url));
+      const posts = Promise.allSettled(promises);
+      return posts
+        .then((results) => {
+          const allPosts = [...results].reduce(
+            (acc, result) => [...acc, ...rssParser(result.value.data.contents).posts], [],
+          );
+          updatePostsIfHaveUpdates(allPosts, watchedState);
+        })
+        .catch(() => {})
+        .then(() => {
+          updateFeedsTimer(interval, watchedState);
+        });
+    }, interval);
   };
 
   const watchedState = onChange(state, (path, value) => {
@@ -84,6 +104,10 @@ const app = () => {
           watchedState.feedUrls = [...watchedState.feedUrls, value];
           updatePostsIfHaveUpdates(posts, watchedState);
           watchedState.processState = 'added';
+          if (!watchedState.updatePostByTimer) {
+            updateFeedsTimer(UPDATE_INTERVAL, watchedState);
+            watchedState.updatePostByTimer = true;
+          }
         })
         .catch((e) => {
           watchedState.processState = 'failed';
@@ -96,23 +120,6 @@ const app = () => {
       view(path, value);
     }
   });
-
-  // const updateFeedsTimer = (interval) => {
-  //   setTimeout(() => {
-  //     const urls = [...watchedState.feedUrls];
-  //     const promises = urls.map((url) => getFeedData(url));
-  //     const posts = Promise.allSettled(promises);
-  //     return posts
-  //       .then((results) => {
-  //         results.forEach((result) => {
-  //           console.log(rssParser(result.value.data.contents));
-  //           updateFeedsTimer(interval);
-  //         });
-  //       })
-  //       .catch((e) => console.log(e));
-  //   }, interval);
-  // };
-  // updateFeedsTimer(UPDATE_INTERVAL);
 
   const updateStateWithValidateUrl = (url) => {
     const schema = yup.string().required().url().notOneOf(watchedState.feedUrls);

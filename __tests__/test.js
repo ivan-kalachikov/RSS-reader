@@ -2,6 +2,7 @@
 
 import { promises as fs } from 'fs';
 import path from 'path';
+import { getByLabelText } from '@testing-library/dom';
 import rssParser from '../src/rss-parser';
 import expectedParsedData from './__fixtures__/expected';
 
@@ -14,4 +15,11 @@ beforeEach(async () => {
 
 test('rssParser test', () => {
   expect(rssParser(rssData)).toEqual(expectedParsedData);
+});
+
+test('rss feed url input form test', () => {
+  const container = document.querySelector('main');
+  const urlUnput = getByLabelText(container, 'url');
+  const submitBtn = getByLabelText(container, 'add');
+  console.log(urlUnput, submitBtn);
 });
