@@ -34,6 +34,7 @@ module.exports = {
   ],
   entry: './index.js',
   target: 'web',
+  devtool: 'eval-source-map',
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'index_bundle.js',

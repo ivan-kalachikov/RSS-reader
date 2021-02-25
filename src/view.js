@@ -53,22 +53,22 @@ const renderPosts = (posts) => {
   const postsList = document.createElement('ul');
   postsList.classList.add('list-group');
   posts.forEach(({
-    title, link, description, postId,
-  }) => {
+    title, link, description,
+  }, i) => {
     const postItem = document.createElement('li');
     postItem.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start');
     const postItemLink = document.createElement('a');
     postItemLink.setAttribute('href', link);
     postItemLink.setAttribute('target', '_blank');
     postItemLink.setAttribute('rel', 'noopener noreferrer');
-    postItemLink.dataset.id = postId;
+    postItemLink.dataset.id = i;
     postItemLink.classList.add('font-weight-bold');
     postItemLink.textContent = title;
     const postItemButton = document.createElement('button');
     postItemButton.setAttribute('type', 'button');
     postItemButton.classList.add('btn', 'btn-primary', 'btn-sm');
     postItemButton.textContent = i18next.t('ui.previewButton');
-    postItemButton.dataset.id = postId;
+    postItemButton.dataset.id = i;
     postItemButton.dataset.toggle = 'modal';
     postItemButton.dataset.target = '#modal';
     postItemButton.addEventListener('click', (e) => {
@@ -104,7 +104,6 @@ const processStateHandler = (state) => {
 };
 
 export default (path, value) => {
-  // console.log('path', path, 'value', value);
   switch (path) {
     case 'form.valid':
       inputUrl.classList.toggle('is-invalid');
