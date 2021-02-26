@@ -42,8 +42,6 @@ yup.setLocale({
 });
 
 const app = () => {
-  const form = document.querySelector('.rss-form');
-
   const getFeedData = (url) => {
     const encodedURI = encodeURIComponent(url);
     return axios.get(`https://hexlet-allorigins.herokuapp.com/get?url=${encodedURI}&disableCache=true`);
@@ -61,27 +59,29 @@ const app = () => {
       feeds: [],
       posts: [],
     },
+    openedPostsIds: [],
     updatePostByTimer: false,
   };
 
   const updatePostsIfHaveUpdates = (posts, watchedState) => {
-    const newPosts = _.differenceWith(posts, watchedState.data.posts, _.isEqual);
+    const existPosts = watchedState.data.posts;
+    const newPosts = _.differenceWith(posts, existPosts, _.isEqual);
     if (newPosts.length) {
-      _.set(watchedState, 'data.posts', [...newPosts, ...watchedState.data.posts]);
+      _.set(watchedState, 'data.posts', [...newPosts, ...existPosts]);
     }
   };
 
   const updateFeedsTimer = (interval, watchedState) => {
     setTimeout(() => {
-      const urls = [...watchedState.feedUrls];
-      const promises = urls.map((url) => getFeedData(url));
-      const posts = Promise.allSettled(promises);
-      return posts
+      const feedUrls = [...watchedState.feedUrls];
+      const promises = feedUrls.map((url) => getFeedData(url));
+      const postsRequests = Promise.allSettled(promises);
+      return postsRequests
         .then((results) => {
-          const allPosts = [...results].reduce(
+          const gettedPosts = [...results].reduce(
             (acc, result) => [...acc, ...rssParser(result.value.data.contents).posts], [],
           );
-          updatePostsIfHaveUpdates(allPosts, watchedState);
+          updatePostsIfHaveUpdates(gettedPosts, watchedState);
         })
         .catch(() => {})
         .then(() => {
@@ -116,8 +116,11 @@ const app = () => {
           watchedState.addedUrl = '';
         });
     }
-    if (path.indexOf('data.') === 0 || path === 'processState' || path === 'form.valid' || path === 'error') {
+    if (path === 'processState' || path === 'form.valid' || path === 'error') {
       view(path, value);
+    }
+    if (path.indexOf('data.') === 0 || path === 'openedPostsIds') {
+      view(path, value, onChange.target(watchedState));
     }
   });
 
@@ -136,11 +139,20 @@ const app = () => {
       });
   };
 
+  const form = document.querySelector('.rss-form');
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const url = formData.get('url');
     updateStateWithValidateUrl(url);
+  });
+
+  const postItemsGroup = document.querySelector('.posts');
+  postItemsGroup.addEventListener('click', (e) => {
+    const id = parseInt(e.target.dataset.id, 10);
+    if (id && !watchedState.openedPostsIds.includes(id)) {
+      watchedState.openedPostsIds = [id, ...watchedState.openedPostsIds];
+    }
   });
 };
 

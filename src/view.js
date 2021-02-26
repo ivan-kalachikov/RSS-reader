@@ -45,7 +45,7 @@ const renderFeeds = (feeds) => {
   feedsContainer.appendChild(fragment);
 };
 
-const renderPosts = (posts) => {
+const renderPosts = (posts, openedPostsIds) => {
   const postsContainer = document.querySelector('.posts');
   postsContainer.innerHTML = '';
   const postsTitle = document.createElement('h2');
@@ -55,20 +55,22 @@ const renderPosts = (posts) => {
   posts.forEach(({
     title, link, description,
   }, i) => {
+    const id = posts.length - i;
     const postItem = document.createElement('li');
     postItem.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start');
     const postItemLink = document.createElement('a');
     postItemLink.setAttribute('href', link);
     postItemLink.setAttribute('target', '_blank');
     postItemLink.setAttribute('rel', 'noopener noreferrer');
-    postItemLink.dataset.id = i;
-    postItemLink.classList.add('font-weight-bold');
+    postItemLink.dataset.id = id;
+    const linkClass = openedPostsIds.includes(id) ? 'font-weight-normal' : 'font-weight-bold';
+    postItemLink.classList.add(linkClass);
     postItemLink.textContent = title;
     const postItemButton = document.createElement('button');
     postItemButton.setAttribute('type', 'button');
     postItemButton.classList.add('btn', 'btn-primary', 'btn-sm');
     postItemButton.textContent = i18next.t('ui.previewButton');
-    postItemButton.dataset.id = i;
+    postItemButton.dataset.id = id;
     postItemButton.dataset.toggle = 'modal';
     postItemButton.dataset.target = '#modal';
     postItemButton.addEventListener('click', (e) => {
@@ -103,7 +105,7 @@ const processStateHandler = (state) => {
   }
 };
 
-export default (path, value) => {
+export default (path, value, data) => {
   switch (path) {
     case 'form.valid':
       inputUrl.classList.toggle('is-invalid');
@@ -118,7 +120,10 @@ export default (path, value) => {
       renderFeeds(value);
       break;
     case 'data.posts':
-      renderPosts(value);
+      renderPosts(value, data.openedPostsIds);
+      break;
+    case 'openedPostsIds':
+      renderPosts(data.data.posts, value);
       break;
     default:
       break;
