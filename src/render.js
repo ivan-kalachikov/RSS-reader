@@ -1,4 +1,5 @@
 import i18next from 'i18next';
+import 'bootstrap/js/dist/modal.js';
 
 const modalTitle = document.querySelector('.modal-title');
 const modalBody = document.querySelector('.modal-body');
