@@ -1,5 +1,4 @@
 // @ts-check
-import 'bootstrap/dist/css/bootstrap.min.css';
 import 'jquery';
 import 'bootstrap';
 import onChange from 'on-change';

@@ -32,7 +32,7 @@ module.exports = {
       template: path.resolve(__dirname, 'src', 'template.html'),
     }),
   ],
-  entry: './index.js',
+  entry: './src/init.js',
   target: 'web',
   devtool: 'eval-source-map',
   output: {
