@@ -19,7 +19,7 @@ i18next.init({
       translation: {
         feedbackMessages: {
           alreadyExistRSS: 'Rss already exists',
-          addedSuccessfully: 'RSS added successfully',
+          newUrlAdded: 'RSS added successfully',
           invalidURL: 'this must be a valid URL',
         },
         ui: {
@@ -42,99 +42,95 @@ yup.setLocale({
 });
 
 const app = () => {
-  const getFeedData = (url) => {
+  const getDataFromUrl = (url) => {
     const encodedURI = encodeURIComponent(url);
     return axios.get(`https://hexlet-allorigins.herokuapp.com/get?url=${encodedURI}&disableCache=true`);
   };
 
   const state = {
-    processState: 'filling',
+    processState: '',
     form: {
       valid: true,
     },
     error: '',
     feedUrls: [],
-    addedUrl: '',
     data: {
       feeds: [],
-      posts: [],
+      posts: {
+        items: [],
+        opened: [],
+      },
     },
-    openedPostsIds: [],
-    updatePostByTimer: false,
+    updatePostsByTimer: false,
   };
 
-  const updatePostsIfHaveUpdates = (posts, watchedState) => {
-    const existPosts = watchedState.data.posts;
+  const watchedState = onChange(state, (path, value) => {
+    view(path, value, onChange.target(watchedState));
+  });
+
+  const addPostsIfHaveUpdates = (posts) => {
+    const existPosts = watchedState.data.posts.items;
     const newPosts = _.differenceWith(posts, existPosts, _.isEqual);
     if (newPosts.length) {
-      _.set(watchedState, 'data.posts', [...newPosts, ...existPosts]);
+      watchedState.data.posts.items = [...newPosts, ...existPosts];
     }
   };
 
-  const updateFeedsTimer = (interval, watchedState) => {
+  const updatePostsByTimer = (interval) => {
     setTimeout(() => {
       const feedUrls = [...watchedState.feedUrls];
-      const promises = feedUrls.map((url) => getFeedData(url));
+      const promises = feedUrls.map((url) => getDataFromUrl(url));
       const postsRequests = Promise.allSettled(promises);
       return postsRequests
         .then((results) => {
-          const gettedPosts = [...results].reduce(
-            (acc, result) => [...acc, ...rssParser(result.value.data.contents).posts], [],
+          const receivedPosts = [...results].reduce(
+            (acc, result) => [...acc, ...rssParser(result.value.data.contents).postItems], [],
           );
-          updatePostsIfHaveUpdates(gettedPosts, watchedState);
+          addPostsIfHaveUpdates(receivedPosts, watchedState);
         })
-        .catch(() => {})
+        .catch((error) => {
+          watchedState.error = error.message;
+        })
         .then(() => {
-          updateFeedsTimer(interval, watchedState);
+          updatePostsByTimer(interval, watchedState);
         });
     }, interval);
   };
 
-  const watchedState = onChange(state, (path, value) => {
-    if (path === 'addedUrl') {
-      if (value === '') {
-        return;
-      }
-      watchedState.processState = 'downloading';
-      getFeedData(value)
-        .then((result) => {
-          watchedState.processState = 'downloaded';
-          const { feed, posts } = rssParser(result.data.contents);
-          watchedState.data.feeds = [feed, ...watchedState.data.feeds];
-          watchedState.feedUrls = [...watchedState.feedUrls, value];
-          updatePostsIfHaveUpdates(posts, watchedState);
-          watchedState.processState = 'added';
-          if (!watchedState.updatePostByTimer) {
-            updateFeedsTimer(UPDATE_INTERVAL, watchedState);
-            watchedState.updatePostByTimer = true;
-          }
-        })
-        .catch((e) => {
-          watchedState.processState = 'failed';
-          watchedState.error = e.message;
-        }).then(() => {
-          watchedState.addedUrl = '';
-        });
-    }
-    if (path === 'processState' || path === 'form.valid' || path === 'error') {
-      view(path, value);
-    }
-    if (path.indexOf('data.') === 0 || path === 'openedPostsIds') {
-      view(path, value, onChange.target(watchedState));
-    }
-  });
-
   const updateStateWithValidateUrl = (url) => {
     const schema = yup.string().required().url().notOneOf(watchedState.feedUrls);
-    watchedState.processState = 'validating';
-    schema.validate(url)
+    return schema.validate(url)
       .then(() => {
         watchedState.form.valid = true;
         watchedState.error = '';
-        watchedState.addedUrl = url;
+        return url;
       })
       .catch((error) => {
         watchedState.form.valid = false;
+        watchedState.error = error.message;
+      });
+  };
+
+  const proceedWithNewUrl = (url) => {
+    if (!url) {
+      return;
+    }
+    watchedState.processState = 'getting';
+    getDataFromUrl(url)
+      .then((result) => {
+        watchedState.processState = 'requestSuccess';
+        const { feed, postItems } = rssParser(result.data.contents);
+        watchedState.data.feeds = [feed, ...watchedState.data.feeds];
+        watchedState.feedUrls = [...watchedState.feedUrls, url];
+        addPostsIfHaveUpdates(postItems, watchedState);
+        watchedState.processState = 'newUrlAdded';
+        if (!watchedState.updatePostsByTimer) {
+          updatePostsByTimer(UPDATE_INTERVAL, watchedState);
+          watchedState.updatePostsByTimer = true;
+        }
+      })
+      .catch((error) => {
+        watchedState.processState = 'requestFailed';
         watchedState.error = error.message;
       });
   };
@@ -143,15 +139,18 @@ const app = () => {
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
-    const url = formData.get('url');
-    updateStateWithValidateUrl(url);
+    const urlValue = formData.get('url');
+    updateStateWithValidateUrl(urlValue)
+      .then((url) => {
+        proceedWithNewUrl(url);
+      });
   });
 
   const postItemsGroup = document.querySelector('.posts');
   postItemsGroup.addEventListener('click', (e) => {
     const id = parseInt(e.target.dataset.id, 10);
-    if (id && !watchedState.openedPostsIds.includes(id)) {
-      watchedState.openedPostsIds = [id, ...watchedState.openedPostsIds];
+    if (id && !watchedState.data.posts.opened.includes(id)) {
+      watchedState.data.posts.opened = [id, ...watchedState.data.posts.opened];
     }
   });
 };

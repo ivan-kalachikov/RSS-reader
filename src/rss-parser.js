@@ -10,8 +10,8 @@ export default (data) => {
   const description = doc.querySelector('channel > description').textContent;
   const feed = { title, description };
 
-  const items = doc.querySelectorAll('item');
-  const posts = [...items].reduce((acc, item) => {
+  const postElements = doc.querySelectorAll('item');
+  const postItems = [...postElements].reduce((acc, item) => {
     const postTitle = item.querySelector('title').textContent;
     const postDescription = item.querySelector('description').textContent;
     const postLink = item.querySelector('link').textContent;
@@ -23,5 +23,5 @@ export default (data) => {
     return [...acc, postItem];
   }, []);
 
-  return { feed, posts };
+  return { feed, postItems };
 };
