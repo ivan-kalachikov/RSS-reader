@@ -1,14 +1,8 @@
 import i18next from 'i18next';
 import 'bootstrap/js/dist/modal.js';
 
-const modalTitle = document.querySelector('.modal-title');
-const modalBody = document.querySelector('.modal-body');
-const modalLink = document.querySelector('.modal-footer a.btn');
-const feedsContainer = document.querySelector('.feeds');
-const postsContainer = document.querySelector('.posts');
-const feedbackEl = document.querySelector('.feedback');
-
 const renderFeeds = (feeds) => {
+  const feedsContainer = document.querySelector('.feeds');
   feedsContainer.innerHTML = '';
   const feedsTitle = document.createElement('h2');
   feedsTitle.textContent = i18next.t('ui.feedsTitle');
@@ -33,6 +27,11 @@ const renderFeeds = (feeds) => {
 };
 
 const renderPosts = (posts, openedPostsIds) => {
+  const modalTitle = document.querySelector('.modal-title');
+  const modalBody = document.querySelector('.modal-body');
+  const modalLink = document.querySelector('.modal-footer a.btn');
+  const postsContainer = document.querySelector('.posts');
+
   postsContainer.innerHTML = '';
   const postsTitle = document.createElement('h2');
   postsTitle.textContent = i18next.t('ui.postsTitle');
@@ -82,6 +81,7 @@ const renderPosts = (posts, openedPostsIds) => {
 };
 
 const renderFeedback = (msg, type = 'success') => {
+  const feedbackEl = document.querySelector('.feedback');
   if (!msg) {
     feedbackEl.classList.remove('danger', 'success');
     return;
