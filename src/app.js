@@ -21,6 +21,7 @@ i18next.init({
           newUrlAdded: 'RSS успешно загружен',
           invalidURL: 'Ссылка должна быть валидным URL',
           invalidRSS: 'Ресурс не содержит валидный RSS',
+          networkError: 'Ошибка сети',
         },
         ui: {
           previewButton: 'Просмотр',
@@ -115,9 +116,9 @@ const app = () => {
           watchedState.updatePostsByTimer = true;
         }
       })
-      .catch((error) => {
+      .catch(() => {
         watchedState.processState = 'requestFailed';
-        watchedState.error = error.message;
+        watchedState.error = i18next.t('feedbackMessages.networkError');
       });
   };
 
