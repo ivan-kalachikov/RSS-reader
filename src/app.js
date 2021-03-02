@@ -30,15 +30,15 @@ i18next.init({
       },
     },
   },
-});
-
-yup.setLocale({
-  mixed: {
-    notOneOf: i18next.t('feedbackMessages.alreadyExistRSS'),
-  },
-  string: {
-    url: i18next.t('feedbackMessages.invalidURL'),
-  },
+}).then(() => {
+  yup.setLocale({
+    mixed: {
+      notOneOf: i18next.t('feedbackMessages.alreadyExistRSS'),
+    },
+    string: {
+      url: i18next.t('feedbackMessages.invalidURL'),
+    },
+  });
 });
 
 const app = () => {
