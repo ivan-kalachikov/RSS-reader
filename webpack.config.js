@@ -30,9 +30,10 @@ module.exports = {
     new HtmlWebpackPlugin({
       title: 'RSS агрегатор',
       template: path.resolve(__dirname, 'src', 'template.html'),
+      filename: path.resolve(__dirname, 'index.html'),
     }),
   ],
-  entry: './src/init.js',
+  entry: './index.js',
   target: 'web',
   devtool: 'eval-source-map',
   output: {
