@@ -9,6 +9,7 @@ const processStateHandler = (state) => {
   switch (state) {
     case 'getting':
       submit.disabled = true;
+      inputUrl.readOnly = true;
       break;
     case 'newUrlAdded':
       inputUrl.value = '';
@@ -17,6 +18,7 @@ const processStateHandler = (state) => {
       break;
     default:
       submit.disabled = false;
+      inputUrl.readOnly = false;
       break;
   }
 };
