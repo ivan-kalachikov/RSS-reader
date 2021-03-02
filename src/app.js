@@ -19,7 +19,8 @@ i18next.init({
         feedbackMessages: {
           alreadyExistRSS: 'RSS уже существует',
           newUrlAdded: 'RSS успешно загружен',
-          invalidURL: 'Ресурс не содержит валидный RSS\n',
+          invalidURL: 'Ссылка должна быть валидным URL',
+          invalidRSS: 'Ресурс не содержит валидный RSS',
         },
         ui: {
           previewButton: 'Просмотр',
