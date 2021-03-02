@@ -103,20 +103,23 @@ const app = () => {
     getDataFromUrl(url)
       .then((result) => {
         watchedState.processState = 'requestSuccess';
-        const { feed, postItems } = rssParser(result.data.contents);
-        watchedState.data.feeds = [feed, ...watchedState.data.feeds];
-        watchedState.feedUrls = [...watchedState.feedUrls, url];
-        addPostsIfHaveUpdates(postItems, watchedState);
-        watchedState.processState = 'newUrlAdded';
-        if (!watchedState.updatePostsByTimer) {
-          updatePostsByTimer(UPDATE_INTERVAL, watchedState);
-          watchedState.updatePostsByTimer = true;
+        try {
+          const { feed, postItems } = rssParser(result.data.contents);
+          watchedState.data.feeds = [feed, ...watchedState.data.feeds];
+          watchedState.feedUrls = [...watchedState.feedUrls, url];
+          addPostsIfHaveUpdates(postItems, watchedState);
+          watchedState.processState = 'newUrlAdded';
+          if (!watchedState.updatePostsByTimer) {
+            updatePostsByTimer(UPDATE_INTERVAL, watchedState);
+            watchedState.updatePostsByTimer = true;
+          }
+        } catch (error) {
+          watchedState.error = error.message;
         }
       })
-      .catch((error) => {
+      .catch(() => {
         watchedState.processState = 'requestFailed';
-        const errorMsg = error.message === 'Network Error' ? i18next.t('feedbackMessages.networkError') : error.message;
-        watchedState.error = errorMsg;
+        watchedState.error = i18next.t('feedbackMessages.networkError');
       });
   };
 
