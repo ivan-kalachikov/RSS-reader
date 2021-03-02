@@ -17,14 +17,14 @@ i18next.init({
     en: {
       translation: {
         feedbackMessages: {
-          alreadyExistRSS: 'Rss already exists',
-          newUrlAdded: 'RSS added successfully',
-          invalidURL: 'this must be a valid URL',
+          alreadyExistRSS: 'RSS уже существует',
+          newUrlAdded: 'RSS успешно загружен',
+          invalidURL: 'Ресурс не содержит валидный RSS\n',
         },
         ui: {
-          previewButton: 'Preview',
-          feedsTitle: 'Feeds',
-          postsTitle: 'Posts',
+          previewButton: 'Просмотр',
+          feedsTitle: 'Фиды',
+          postsTitle: 'Посты',
         },
       },
     },
