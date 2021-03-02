@@ -136,26 +136,23 @@ const app = () => {
   };
 
   const form = document.querySelector('.rss-form');
-  if (form) {
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const formData = new FormData(e.target);
-      const urlValue = formData.get('url');
-      updateStateWithValidateUrl(urlValue)
-        .then((url) => {
-          proceedWithNewUrl(url);
-        });
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const urlValue = formData.get('url');
+    updateStateWithValidateUrl(urlValue)
+    .then((url) => {
+      proceedWithNewUrl(url);
     });
-  }
+  });
 
   const postItemsGroup = document.querySelector('.posts');
-  if (postItemsGroup) {
-    postItemsGroup.addEventListener('click', (e) => {
-      const id = parseInt(e.target.dataset.id, 10);
-      if (id && !watchedState.data.posts.opened.includes(id)) {
-        watchedState.data.posts.opened = [id, ...watchedState.data.posts.opened];
-      }
-    });
+  postItemsGroup.addEventListener('click', (e) => {
+    const id = parseInt(e.target.dataset.id, 10);
+    if (id && !watchedState.data.posts.opened.includes(id)) {
+      watchedState.data.posts.opened = [id, ...watchedState.data.posts.opened];
+    }
+  });
   }
 };
 
