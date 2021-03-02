@@ -3,10 +3,9 @@
 import i18next from 'i18next';
 import { renderFeeds, renderPosts, renderFeedback } from './render.js';
 
-const submit = document.querySelector('.rss-form .btn');
-const inputUrl = document.querySelector('.form-control[name=url]');
-
 const processStateHandler = (state) => {
+  const submit = document.querySelector('.rss-form .btn');
+  const inputUrl = document.querySelector('.form-control[name=url]');
   switch (state) {
     case 'getting':
       submit.disabled = true;
@@ -23,6 +22,7 @@ const processStateHandler = (state) => {
 };
 
 export default (path, value, state) => {
+  const inputUrl = document.querySelector('.form-control[name=url]');
   switch (path) {
     case 'form.valid':
       inputUrl.classList.toggle('is-invalid');
