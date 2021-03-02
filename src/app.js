@@ -97,21 +97,7 @@ const app = () => {
     }, interval);
   };
 
-  const updateStateWithValidateUrl = (url) => {
-    const schema = yup.string().required().url().notOneOf(watchedState.feedUrls);
-    return schema.validate(url)
-      .then(() => {
-        watchedState.form.valid = true;
-        watchedState.error = '';
-        return url;
-      })
-      .catch((error) => {
-        watchedState.form.valid = false;
-        watchedState.error = error.message;
-      });
-  };
-
-  const proceedWithNewUrl = (url) => {
+  const getDataAndUpdate = (url) => {
     if (!url) {
       return;
     }
@@ -135,15 +121,25 @@ const app = () => {
       });
   };
 
+  const addNewUrl = (url) => {
+    const schema = yup.string().required().url().notOneOf(watchedState.feedUrls);
+    try {
+      schema.validateSync(url);
+      watchedState.form.valid = true;
+      watchedState.error = '';
+      getDataAndUpdate(url);
+    } catch (error) {
+      watchedState.form.valid = false;
+      watchedState.error = error.message;
+    }
+  };
+
   const form = document.querySelector('.rss-form');
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const urlValue = formData.get('url');
-    updateStateWithValidateUrl(urlValue)
-      .then((url) => {
-        proceedWithNewUrl(url);
-      });
+    addNewUrl(urlValue);
   });
 
   const postItemsGroup = document.querySelector('.posts');
