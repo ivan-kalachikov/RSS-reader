@@ -141,9 +141,9 @@ const app = () => {
     const formData = new FormData(e.target);
     const urlValue = formData.get('url');
     updateStateWithValidateUrl(urlValue)
-    .then((url) => {
-      proceedWithNewUrl(url);
-    });
+      .then((url) => {
+        proceedWithNewUrl(url);
+      });
   });
 
   const postItemsGroup = document.querySelector('.posts');
@@ -153,7 +153,6 @@ const app = () => {
       watchedState.data.posts.opened = [id, ...watchedState.data.posts.opened];
     }
   });
-  }
 };
 
 export default app;
