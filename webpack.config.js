@@ -32,6 +32,10 @@ module.exports = {
       template: path.resolve(__dirname, 'src', 'template.html'),
       filename: path.resolve(__dirname, 'index.html'),
     }),
+    new HtmlWebpackPlugin({
+      title: 'RSS агрегатор',
+      template: path.resolve(__dirname, 'src', 'template.html'),
+    }),
   ],
   entry: './index.js',
   target: 'web',
