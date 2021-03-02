@@ -43,11 +43,6 @@ i18next.init({
 });
 
 const app = () => {
-  const getDataFromUrl = (url) => {
-    const encodedURI = encodeURIComponent(url);
-    return axios.get(`https://hexlet-allorigins.herokuapp.com/get?url=${encodedURI}&disableCache=true`);
-  };
-
   const state = {
     processState: '',
     form: {
@@ -69,6 +64,11 @@ const app = () => {
     view(path, value, onChange.target(watchedState));
   });
 
+  const getDataFromUrl = (url) => {
+    const encodedURI = encodeURIComponent(url);
+    return axios.get(`https://hexlet-allorigins.herokuapp.com/get?url=${encodedURI}&disableCache=true`);
+  };
+
   const addPostsIfHaveUpdates = (posts) => {
     const existPosts = watchedState.data.posts.items;
     const newPosts = _.differenceWith(posts, existPosts, _.isEqual);
@@ -88,9 +88,6 @@ const app = () => {
             (acc, result) => [...acc, ...rssParser(result.value.data.contents).postItems], [],
           );
           addPostsIfHaveUpdates(receivedPosts, watchedState);
-        })
-        .catch((error) => {
-          watchedState.error = error.message;
         })
         .finally(() => {
           updatePostsByTimer(interval, watchedState);
@@ -116,9 +113,10 @@ const app = () => {
           watchedState.updatePostsByTimer = true;
         }
       })
-      .catch(() => {
+      .catch((error) => {
         watchedState.processState = 'requestFailed';
-        watchedState.error = i18next.t('feedbackMessages.networkError');
+        const errorMsg = error.message === 'Network Error' ? i18next.t('feedbackMessages.networkError') : error.message;
+        watchedState.error = errorMsg;
       });
   };
 
