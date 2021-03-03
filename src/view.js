@@ -11,6 +11,10 @@ const processStateHandler = (state) => {
       submit.disabled = true;
       inputUrl.readOnly = true;
       break;
+    case 'validating':
+      submit.disabled = true;
+      inputUrl.readOnly = true;
+      break;
     case 'newUrlAdded':
       inputUrl.value = '';
       inputUrl.focus();

@@ -124,6 +124,7 @@ const app = () => {
   };
 
   const updateStateWithValidation = (url) => {
+    watchedState.processState = 'validating';
     const schema = yup.string().required().url().notOneOf(watchedState.feedUrls);
     return schema.validate(url)
       .then(() => {
