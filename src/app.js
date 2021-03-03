@@ -123,18 +123,17 @@ const app = () => {
       });
   };
 
-  const updateStateWithValidation = (url) => {
+  const addNewUrl = (url) => {
     const schema = yup.string().required().url().notOneOf(watchedState.feedUrls);
-    return schema.validate(url)
-      .then(() => {
-        watchedState.form.valid = true;
-        watchedState.error = '';
-        return url;
-      })
-      .catch((error) => {
-        watchedState.form.valid = false;
-        watchedState.error = error.message;
-      });
+    try {
+      schema.validateSync(url);
+      watchedState.form.valid = true;
+      watchedState.error = '';
+      getDataAndUpdate(url);
+    } catch (error) {
+      watchedState.form.valid = false;
+      watchedState.error = error.message;
+    }
   };
 
   const form = document.querySelector('.rss-form');
@@ -142,10 +141,7 @@ const app = () => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const urlValue = formData.get('url');
-    updateStateWithValidation(urlValue)
-      .then((url) => {
-        getDataAndUpdate(url);
-      });
+    addNewUrl(urlValue);
   });
 
   const postItemsGroup = document.querySelector('.posts');
