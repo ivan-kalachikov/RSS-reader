@@ -128,11 +128,13 @@ const app = () => {
     const schema = yup.string().required().url().notOneOf(watchedState.feedUrls);
     return schema.validate(url)
       .then(() => {
+        watchedState.processState = 'validationSuccess';
         watchedState.form.valid = true;
         watchedState.error = '';
         return url;
       })
       .catch((error) => {
+        watchedState.processState = 'validationFailed';
         watchedState.form.valid = false;
         watchedState.error = error.message;
       });
