@@ -14,8 +14,6 @@ import expectedParsedData from './__fixtures__/expected';
 
 nock.disableNetConnect();
 
-let input;
-let button;
 const feedbackMessages = {
   alreadyExistRSS: 'RSS уже существует',
   newUrlAdded: 'RSS успешно загружен',
@@ -28,8 +26,6 @@ beforeEach(async () => {
   nock.cleanAll();
   const html = await fs.readFile('index.html', 'utf-8');
   document.body.innerHTML = html;
-  input = screen.getByRole('textbox', { name: 'url' });
-  button = screen.getByRole('button', { name: 'add' });
   axios.defaults.adapter = httpAdapter;
   app();
 });
@@ -41,6 +37,8 @@ test('rssParser test', async () => {
 });
 
 test('wrong url handler', async () => {
+  const input = screen.getByRole('textbox', { name: 'url' });
+  const button = screen.getByRole('button', { name: 'add' });
   userEvent.type(input, 'wrong url');
   userEvent.click(button);
   await waitFor(() => {
@@ -49,6 +47,8 @@ test('wrong url handler', async () => {
 });
 
 test('already exist url handler', async () => {
+  const input = screen.getByRole('textbox', { name: 'url' });
+  const button = screen.getByRole('button', { name: 'add' });
   const successfulResponse = await fs.readFile(path.resolve(__dirname, '__fixtures__', 'successful-response.json'), 'utf-8');
   nock('https://hexlet-allorigins.herokuapp.com')
     .get('/get')
@@ -63,6 +63,8 @@ test('already exist url handler', async () => {
 });
 
 test('block ui while getting data, and unblock after that', async () => {
+  const input = screen.getByRole('textbox', { name: 'url' });
+  const button = screen.getByRole('button', { name: 'add' });
   nock('https://hexlet-allorigins.herokuapp.com')
     .get('/get')
     .query(true)
@@ -75,11 +77,13 @@ test('block ui while getting data, and unblock after that', async () => {
   });
   await waitFor(() => {
     expect(input).not.toHaveAttribute('readonly');
-    expect(button).not.toBeDisabled();
+    expect(button).toBeEnabled();
   }, { delay: 100 });
 });
 
 test('handle invalid rss error', async () => {
+  const input = screen.getByRole('textbox', { name: 'url' });
+  const button = screen.getByRole('button', { name: 'add' });
   nock('https://hexlet-allorigins.herokuapp.com')
     .get('/get')
     .query(true)
@@ -90,12 +94,16 @@ test('handle invalid rss error', async () => {
 });
 
 test('network error', async () => {
+  const input = screen.getByRole('textbox', { name: 'url' });
+  const button = screen.getByRole('button', { name: 'add' });
   userEvent.type(input, 'https://ru.hexlet.io/lessons.rss');
   userEvent.click(button);
   expect(await screen.findByText(feedbackMessages.networkError)).toBeInTheDocument();
 });
 
 test('successful added', async () => {
+  const input = screen.getByRole('textbox', { name: 'url' });
+  const button = screen.getByRole('button', { name: 'add' });
   const successfulResponse = await fs.readFile(path.resolve(__dirname, '__fixtures__', 'successful-response.json'), 'utf-8');
   nock('https://hexlet-allorigins.herokuapp.com')
     .get('/get')
