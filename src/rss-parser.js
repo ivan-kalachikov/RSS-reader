@@ -13,7 +13,7 @@ export default (data) => {
   const feed = { title, description };
 
   const postElements = doc.querySelectorAll('item');
-  const postItems = [...postElements].reduce((acc, item) => {
+  const posts = [...postElements].reduce((acc, item) => {
     const postTitle = item.querySelector('title').textContent;
     const postDescription = item.querySelector('description').textContent;
     const postLink = item.querySelector('link').textContent;
@@ -25,5 +25,5 @@ export default (data) => {
     return [...acc, postItem];
   }, []);
 
-  return { feed, postItems };
+  return { feed, posts };
 };

@@ -36,17 +36,15 @@ test('rssParser test', async () => {
   expect(rssParser(rssData)).toEqual(expectedParsedData);
 });
 
-test('wrong url handler', async () => {
+test('wrong url', async () => {
   const input = screen.getByRole('textbox', { name: 'url' });
   const button = screen.getByRole('button', { name: 'add' });
   userEvent.type(input, 'wrong url');
   userEvent.click(button);
-  await waitFor(() => {
-    expect(screen.getByText(feedbackMessages.invalidURL)).toBeInTheDocument();
-  });
+  expect(await screen.findByText(feedbackMessages.invalidURL)).toBeInTheDocument();
 });
 
-test('already exist url handler', async () => {
+test('add already exist url', async () => {
   const input = screen.getByRole('textbox', { name: 'url' });
   const button = screen.getByRole('button', { name: 'add' });
   const successfulResponse = await fs.readFile(path.resolve(__dirname, '__fixtures__', 'successful-response.json'), 'utf-8');
@@ -81,7 +79,7 @@ test('block ui while getting data, and unblock after that', async () => {
   }, { delay: 100 });
 });
 
-test('handle invalid rss error', async () => {
+test('invalid rss error', async () => {
   const input = screen.getByRole('textbox', { name: 'url' });
   const button = screen.getByRole('button', { name: 'add' });
   nock('https://hexlet-allorigins.herokuapp.com')

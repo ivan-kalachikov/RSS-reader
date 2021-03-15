@@ -1,6 +1,6 @@
 export default {
   feed: { title: 'Новые уроки на Хекслете', description: 'Практические уроки по программированию' },
-  postItems: [{
+  posts: [{
     title: 'Переполнение / Основы вёрстки контента', description: 'Цель: Изучить работу свойства overflow и способах скрытия контента внутри блоков. Узнать о свойстве text-overflow', link: 'https://ru.hexlet.io/courses/css-content/lessons/overflow/theory_unit',
   }, {
     title: 'Формы / Основы вёрстки контента', description: 'Цель: Изучить создание одного из самых важных элементов на сайте — формы. Научиться использовать стандартные элементы ввода данных и отправки формы', link: 'https://ru.hexlet.io/courses/css-content/lessons/forms/theory_unit',

@@ -1,6 +1,28 @@
 import i18next from 'i18next';
 import 'bootstrap/js/dist/modal.js';
 
+const renderModal = (title, description, link) => {
+  const modalTitle = document.querySelector('.modal-title');
+  const modalBody = document.querySelector('.modal-body');
+  const modalLink = document.querySelector('.modal-footer a.btn');
+  modalTitle.textContent = title;
+  modalBody.textContent = description;
+  modalLink.setAttribute('href', link);
+};
+
+const renderFeedback = (msg, type = 'success') => {
+  const feedbackEl = document.querySelector('.feedback');
+  if (!msg) {
+    feedbackEl.classList.remove('danger', 'success');
+    return;
+  }
+  feedbackEl.textContent = msg;
+  const removedClass = `text-${type === 'success' ? 'danger' : 'success'}`;
+  const addedClass = `text-${type}`;
+  feedbackEl.classList.remove(removedClass);
+  feedbackEl.classList.add(addedClass);
+};
+
 const renderFeeds = (feeds) => {
   const feedsContainer = document.querySelector('.feeds');
   feedsContainer.innerHTML = '';
@@ -9,7 +31,8 @@ const renderFeeds = (feeds) => {
   const feedsList = document.createElement('ul');
   feedsList.classList.add('list-group', 'mb-5');
 
-  feeds.forEach(({ title, description }) => {
+  feeds.forEach(({ data }) => {
+    const { title, description } = data;
     const feedItem = document.createElement('li');
     feedItem.classList.add('list-group-item');
     const feedItemTitle = document.createElement('h3');
@@ -27,9 +50,6 @@ const renderFeeds = (feeds) => {
 };
 
 const renderPosts = (posts, openedPostsIds) => {
-  const modalTitle = document.querySelector('.modal-title');
-  const modalBody = document.querySelector('.modal-body');
-  const modalLink = document.querySelector('.modal-footer a.btn');
   const postsContainer = document.querySelector('.posts');
 
   postsContainer.innerHTML = '';
@@ -64,9 +84,7 @@ const renderPosts = (posts, openedPostsIds) => {
 
     postItemButton.addEventListener('click', (e) => {
       e.preventDefault();
-      modalTitle.textContent = title;
-      modalBody.textContent = description;
-      modalLink.setAttribute('href', link);
+      renderModal(title, description, link);
     });
 
     postItem.appendChild(postItemLink);
@@ -78,19 +96,6 @@ const renderPosts = (posts, openedPostsIds) => {
   fragment.appendChild(postsTitle);
   fragment.appendChild(postsList);
   postsContainer.appendChild(fragment);
-};
-
-const renderFeedback = (msg, type = 'success') => {
-  const feedbackEl = document.querySelector('.feedback');
-  if (!msg) {
-    feedbackEl.classList.remove('danger', 'success');
-    return;
-  }
-  feedbackEl.textContent = msg;
-  const removedClass = `text-${type === 'success' ? 'danger' : 'success'}`;
-  const addedClass = `text-${type}`;
-  feedbackEl.classList.remove(removedClass);
-  feedbackEl.classList.add(addedClass);
 };
 
 export { renderFeeds, renderPosts, renderFeedback };
