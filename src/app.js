@@ -87,10 +87,10 @@ const app = () => {
           const receivedPosts = [...results].reduce(
             (acc, result) => [...acc, ...rssParser(result.value.data.contents).postItems], [],
           );
-          addPostsIfHaveUpdates(receivedPosts, watchedState);
+          addPostsIfHaveUpdates(receivedPosts);
         })
         .finally(() => {
-          updatePostsByTimer(interval, watchedState);
+          updatePostsByTimer(interval);
         });
     }, interval);
   };
@@ -107,10 +107,10 @@ const app = () => {
           const { feed, postItems } = rssParser(result.data.contents);
           watchedState.data.feeds = [feed, ...watchedState.data.feeds];
           watchedState.feedUrls = [...watchedState.feedUrls, url];
-          addPostsIfHaveUpdates(postItems, watchedState);
+          addPostsIfHaveUpdates(postItems);
           watchedState.processState = 'newUrlAdded';
           if (!watchedState.updatePostsByTimer) {
-            updatePostsByTimer(UPDATE_INTERVAL, watchedState);
+            updatePostsByTimer(UPDATE_INTERVAL);
             watchedState.updatePostsByTimer = true;
           }
         } catch (error) {
