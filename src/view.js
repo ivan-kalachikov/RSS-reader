@@ -9,22 +9,18 @@ const processStateHandler = (processState) => {
   submit.disabled = false;
   inputUrl.readOnly = false;
   switch (processState) {
+    case 'formValidationError':
+      inputUrl.classList.add('is-invalid');
+      break;
     case 'addFeedUrl':
       inputUrl.classList.remove('is-invalid');
       submit.disabled = true;
       inputUrl.readOnly = true;
       break;
-    case 'formValidationError':
-      inputUrl.classList.add('is-invalid');
-      break;
-    case 'requestSuccess':
+    case 'feedAdded':
       inputUrl.value = '';
       inputUrl.focus();
-      break;
-    case 'feedAdded':
       renderFeedback(i18next.t('feedbackMessages.newUrlAdded'), 'success');
-      break;
-    case 'requestFailed':
       break;
     case 'error':
       break;

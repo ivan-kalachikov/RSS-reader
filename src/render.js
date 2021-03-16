@@ -19,8 +19,8 @@ const renderFeedback = (msg, type = 'success') => {
   feedbackEl.textContent = msg;
   const removedClass = `text-${type === 'success' ? 'danger' : 'success'}`;
   const addedClass = `text-${type}`;
-  feedbackEl.classList.remove(removedClass);
   feedbackEl.classList.add(addedClass);
+  feedbackEl.classList.remove(removedClass);
 };
 
 const renderFeeds = (feeds) => {

@@ -83,12 +83,8 @@ const app = () => {
   };
 
   const getDataFromUrl = (url) => axios.get(generateUrl(url))
-    .then((response) => {
-      watchedState.processState.name = 'requestSuccess';
-      return Promise.resolve(response);
-    })
+    .then((response) => Promise.resolve(response))
     .catch(() => {
-      watchedState.processState.name = 'requestFailed';
       throw new Error(i18next.t('feedbackMessages.networkError'));
     });
 
