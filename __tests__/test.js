@@ -12,8 +12,6 @@ import app from '../src/app';
 import rssParser from '../src/rss-parser';
 import expectedParsedData from './__fixtures__/expected';
 
-nock.disableNetConnect();
-
 const feedbackMessages = {
   alreadyExistRSS: 'RSS уже существует',
   newUrlAdded: 'RSS успешно загружен',
@@ -24,6 +22,7 @@ const feedbackMessages = {
 
 beforeEach(async () => {
   nock.cleanAll();
+  nock.disableNetConnect();
   const html = await fs.readFile('index.html', 'utf-8');
   document.body.innerHTML = html;
   axios.defaults.adapter = httpAdapter;
@@ -44,7 +43,7 @@ test('wrong url', async () => {
   expect(await screen.findByText(feedbackMessages.invalidURL)).toBeInTheDocument();
 });
 
-test('add already exist url', async () => {
+test('add success / add exist url error', async () => {
   const input = screen.getByRole('textbox', { name: 'url' });
   const button = screen.getByRole('button', { name: 'add' });
   const successfulResponse = await fs.readFile(path.resolve(__dirname, '__fixtures__', 'successful-response.json'), 'utf-8');
@@ -97,17 +96,4 @@ test('network error', async () => {
   userEvent.type(input, 'https://ru.hexlet.io/lessons.rss');
   userEvent.click(button);
   expect(await screen.findByText(feedbackMessages.networkError)).toBeInTheDocument();
-});
-
-test('successful added', async () => {
-  const input = screen.getByRole('textbox', { name: 'url' });
-  const button = screen.getByRole('button', { name: 'add' });
-  const successfulResponse = await fs.readFile(path.resolve(__dirname, '__fixtures__', 'successful-response.json'), 'utf-8');
-  nock('https://hexlet-allorigins.herokuapp.com')
-    .get('/get')
-    .query(true)
-    .reply(200, successfulResponse);
-  userEvent.type(input, 'https://ru.hexlet.io/lessons.rss');
-  userEvent.click(button);
-  expect(await screen.findByText(feedbackMessages.newUrlAdded)).toBeInTheDocument();
 });

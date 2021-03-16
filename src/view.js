@@ -20,6 +20,8 @@ const processStateHandler = (processState) => {
     case 'requestSuccess':
       inputUrl.value = '';
       inputUrl.focus();
+      break;
+    case 'feedAdded':
       renderFeedback(i18next.t('feedbackMessages.newUrlAdded'), 'success');
       break;
     case 'requestFailed':

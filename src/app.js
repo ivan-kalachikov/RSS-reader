@@ -73,7 +73,7 @@ const app = () => {
       })
       .catch((error) => {
         watchedState.processState.name = 'formValidationError';
-        watchedState.processState.errors = error.message;
+        throw new Error(error.message);
       });
   };
 
@@ -89,10 +89,11 @@ const app = () => {
     })
     .catch(() => {
       watchedState.processState.name = 'requestFailed';
-      watchedState.processState.errors = i18next.t('feedbackMessages.networkError');
+      throw new Error(i18next.t('feedbackMessages.networkError'));
     });
 
   const updateStateWithNewFeed = ((data, url) => {
+    watchedState.processState.name = 'feedAdded';
     const newFeed = { url, data: data.feed };
     watchedState.data.feeds = [newFeed, ...watchedState.data.feeds];
     return Promise.resolve(data);
