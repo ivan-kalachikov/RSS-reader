@@ -6,7 +6,7 @@ import onChange from 'on-change';
 import * as yup from 'yup';
 import _ from 'lodash';
 import view from './view.js';
-import rssParser from './rss-parser.js';
+import parseRss from './parse-rss.js';
 
 const UPDATE_INTERVAL = 5000;
 
@@ -44,55 +44,31 @@ i18next.init({
 
 const app = () => {
   const state = {
-    processState: {
-      name: '',
-      errors: '',
-      updatePostsTimer: false,
+    form: {
+      valid: true,
+      error: '',
+    },
+    loadingProcess: {
+      state: 'idle',
+      error: '',
     },
     data: {
       feeds: [],
       posts: [],
     },
     ui: {
-      openedPosts: [],
+      openedPostsIds: [],
     },
   };
 
   const watchedState = onChange(state, (path, value) => {
-    view(path, value, onChange.target(watchedState));
+    view(path, value, state);
   });
 
-  const updateStateWithValidation = (url) => {
-    const feedUrls = _.map(watchedState.data.feeds, 'url');
-    const schema = yup.string().required().url().notOneOf(feedUrls);
-    return schema.validate(url)
-      .then(() => {
-        watchedState.processState.name = 'addFeedUrl';
-        watchedState.processState.errors = '';
-        return url;
-      })
-      .catch((error) => {
-        watchedState.processState.name = 'formValidationError';
-        throw new Error(error.message);
-      });
-  };
-
-  const generateUrl = (url) => {
-    const encodedURI = encodeURIComponent(url);
-    return `https://hexlet-allorigins.herokuapp.com/get?url=${encodedURI}&disableCache=true`;
-  };
-
-  const getDataFromUrl = (url) => axios.get(generateUrl(url))
-    .then((response) => Promise.resolve(response))
-    .catch(() => {
-      throw new Error(i18next.t('feedbackMessages.networkError'));
-    });
-
-  const updateStateWithNewFeed = ((data, url) => {
-    watchedState.processState.name = 'feedAdded';
-    const newFeed = { url, data: data.feed };
-    watchedState.data.feeds = [newFeed, ...watchedState.data.feeds];
-    return Promise.resolve(data);
+  const updateStateWithNewFeed = ((url, feed) => {
+    if (!watchedState.data.feeds.some(({ url: itemUrl }) => itemUrl === url)) {
+      watchedState.data.feeds = [{ url, data: feed }, ...watchedState.data.feeds];
+    }
   });
 
   const updateStateWithNewPosts = ((posts) => {
@@ -101,52 +77,68 @@ const app = () => {
     if (newPosts.length) {
       watchedState.data.posts = [...newPosts, ...existPosts];
     }
-    return Promise.resolve(newPosts.length > 0);
   });
 
-  const updatePostsByTimer = (interval) => {
-    watchedState.processState.updatePostsTimer = true;
-    setTimeout(() => {
-      const feedUrls = _.map(watchedState.data.feeds, 'url');
-      const promises = feedUrls.map((url) => axios.get(generateUrl(url)));
-      const postsRequests = Promise.allSettled(promises);
-      return postsRequests
-        .then((results) => {
-          const receivedPosts = results.map(
-            (result) => rssParser(result.value.data.contents).posts,
-          );
-          updateStateWithNewPosts(_.flattenDeep(receivedPosts));
-        })
-        .finally(() => {
-          updatePostsByTimer(interval);
-        });
-    }, interval);
+  const getRawData = (url) => {
+    const encodedURI = encodeURIComponent(url);
+    const normalizedUrl = `https://hexlet-allorigins.herokuapp.com/get?url=${encodedURI}&disableCache=true`;
+    return axios.get(normalizedUrl)
+      .catch((error) => {
+        if (error.request) {
+          throw new Error(i18next.t('feedbackMessages.networkError'));
+        } else {
+          throw error;
+        }
+      });
+  };
+
+  const getDataAndUpdate = (url) => getRawData(url)
+    .then((response) => {
+      const { feed, posts } = parseRss(response.data.contents);
+      updateStateWithNewFeed(url, feed);
+      updateStateWithNewPosts(posts);
+      setTimeout(() => {
+        getDataAndUpdate(url);
+      }, UPDATE_INTERVAL);
+    });
+
+  const addUrlHandler = (url) => {
+    const feedUrls = _.map(watchedState.data.feeds, 'url');
+    const schema = yup.string().required().url().notOneOf(feedUrls);
+    watchedState.form.valid = true;
+    schema.validate(url)
+      .then(() => {
+        watchedState.loadingProcess.error = '';
+        watchedState.loadingProcess.state = 'fetching';
+        watchedState.form.error = '';
+        return getDataAndUpdate(url);
+      })
+      .then(() => {
+        watchedState.loadingProcess.state = 'idle';
+      })
+      .catch((error) => {
+        if (error.name === 'ValidationError') {
+          watchedState.form.error = error.message;
+          watchedState.form.valid = false;
+        } else {
+          watchedState.loadingProcess.error = error.message;
+          watchedState.loadingProcess.state = 'error';
+        }
+      });
   };
 
   const form = document.querySelector('.rss-form');
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     const urlValue = new FormData(e.target).get('url');
-    updateStateWithValidation(urlValue)
-      .then((url) => url && getDataFromUrl(url))
-      .then((response) => response && rssParser(response.data.contents))
-      .then((data) => data && updateStateWithNewFeed(data, urlValue))
-      .then((data) => data && updateStateWithNewPosts(data.posts))
-      .then((postAdded) => (
-        !watchedState.processState.updatePostsTimer
-        && postAdded && updatePostsByTimer(UPDATE_INTERVAL)
-      ))
-      .catch((error) => {
-        watchedState.processState.name = 'error';
-        watchedState.processState.errors = error.message;
-      });
+    addUrlHandler(urlValue);
   });
 
   const postItemsGroup = document.querySelector('.posts');
   postItemsGroup.addEventListener('click', (e) => {
-    const id = parseInt(e.target.dataset.id, 10);
-    if (id && !watchedState.ui.openedPosts.includes(id)) {
-      watchedState.ui.openedPosts = [id, ...watchedState.ui.openedPosts];
+    const { id } = e.target.dataset;
+    if (id && !watchedState.ui.openedPostsIds.includes(id)) {
+      watchedState.ui.openedPostsIds = [id, ...watchedState.ui.openedPostsIds];
     }
   });
 };

@@ -1,24 +1,57 @@
 export default {
-  feed: { title: 'Новые уроки на Хекслете', description: 'Практические уроки по программированию' },
+  feed: {
+    title: 'Новые уроки на Хекслете',
+    description: 'Практические уроки по программированию',
+  },
   posts: [{
-    title: 'Переполнение / Основы вёрстки контента', description: 'Цель: Изучить работу свойства overflow и способах скрытия контента внутри блоков. Узнать о свойстве text-overflow', link: 'https://ru.hexlet.io/courses/css-content/lessons/overflow/theory_unit',
+    id: '1903',
+    title: 'Подключение файлов / HTML: Препроцессор Pug',
+    description: 'Цель: Изучить подключение Pug файлов и работу с дополнительными модулями, позволяющие обрабатывать данные в разных форматах',
+    link: 'https://ru.hexlet.io/courses/html-pug/lessons/include/theory_unit',
   }, {
-    title: 'Формы / Основы вёрстки контента', description: 'Цель: Изучить создание одного из самых важных элементов на сайте — формы. Научиться использовать стандартные элементы ввода данных и отправки формы', link: 'https://ru.hexlet.io/courses/css-content/lessons/forms/theory_unit',
+    id: '1904',
+    title: 'Теги и контент / HTML: Препроцессор Pug',
+    description: 'Цель: Научиться добавлять теги, атрибуты и контент с помощью Pug',
+    link: 'https://ru.hexlet.io/courses/html-pug/lessons/html/theory_unit',
   }, {
-    title: 'Псевдоэлементы / Основы вёрстки контента', description: 'Цель: Познакомиться с псевдоэлементами и научиться генерировать новый контент через CSS', link: 'https://ru.hexlet.io/courses/css-content/lessons/pseudoelements/theory_unit',
+    id: '1901',
+    title: 'Установка / HTML: Препроцессор Pug',
+    description: 'Цель: Установить препроцессор Pug и скомпилировать первый файл',
+    link: 'https://ru.hexlet.io/courses/html-pug/lessons/install/theory_unit',
   }, {
-    title: 'Псевдоклассы / Основы вёрстки контента', description: 'Цель: Узнать о возможностях стилизации событий элемента и стилизации по месторасположению элемента. Научиться использовать псевдоклассы', link: 'https://ru.hexlet.io/courses/css-content/lessons/pseudoclasses/theory_unit',
+    id: '1902',
+    title: 'Введение / HTML: Препроцессор Pug',
+    description: 'Цель: Узнать о целях и структуре курса',
+    link: 'https://ru.hexlet.io/courses/html-pug/lessons/intro/theory_unit',
   }, {
-    title: 'Селекторы / Основы вёрстки контента', description: 'Цель: Изучить более сложные селекторы второго и третьего уровня по спецификации W3C', link: 'https://ru.hexlet.io/courses/css-content/lessons/selectors/theory_unit',
+    id: '1895',
+    title: 'Рациональные числа / Ruby: Составные данные',
+    description: 'Цель: Рассмотреть рациональные числа как новый пример абстракции на основе пар чисел.',
+    link: 'https://ru.hexlet.io/courses/ruby-compound-data/lessons/rational/theory_unit',
   }, {
-    title: 'Таблицы / Основы вёрстки контента', description: 'Цель: Научиться верстать таблицы. Узнать о семантике таблиц', link: 'https://ru.hexlet.io/courses/css-content/lessons/table/theory_unit',
+    id: '1897',
+    title: 'Реализация пар / Ruby: Составные данные',
+    description: 'Цель: Написать собственную реализацию пар на языке Ruby.',
+    link: 'https://ru.hexlet.io/courses/ruby-compound-data/lessons/pair_implementation/theory_unit',
   }, {
-    title: 'Медиаэлементы / Основы вёрстки контента', description: 'Цель: Узнать о способах добавления медиаэлементов на страницу Изучить возможности при вставке изображений, видео, аудио', link: 'https://ru.hexlet.io/courses/css-content/lessons/media/theory_unit',
+    id: '1898',
+    title: 'Барьеры абстракции / Ruby: Составные данные',
+    description: 'Цель: Познакомиться с понятием барьеров абстракции и лучше понять цель разделения на уровни абстракции и повышения уровня абстракции.',
+    link: 'https://ru.hexlet.io/courses/ruby-compound-data/lessons/barriers-of-abstraction/theory_unit',
   }, {
-    title: 'Единицы измерения / Основы вёрстки контента', description: 'Цель: Изучить единицы измерения, доступные в CSS, и их взаимосвязи между собой', link: 'https://ru.hexlet.io/courses/css-content/lessons/units/theory_unit',
+    id: '1900',
+    title: 'Моделирование / Ruby: Составные данные',
+    description: 'Цель: Познакомиться с понятием «Моделирование предметной области».',
+    link: 'https://ru.hexlet.io/courses/ruby-compound-data/lessons/modeling/theory_unit',
   }, {
-    title: 'Колонки / Основы вёрстки контента', description: 'Цель: Познакомиться с CSS Multi-column Layout и узнать о способах его применения', link: 'https://ru.hexlet.io/courses/css-content/lessons/columns/theory_unit',
+    id: '1894',
+    title: 'Пары / Ruby: Составные данные',
+    description: 'Цель: Разобраться с тем, как устроены и реализованы точки в нашей графической библиотеке.',
+    link: 'https://ru.hexlet.io/courses/ruby-compound-data/lessons/pair/theory_unit',
   }, {
-    title: 'Объекты-Сущности, Объекты-Значения и внедренные объекты / PHP: Объектно-ориентированный дизайн', description: 'Цель: Познакомиться с основными принципами организации объектов описывающих предметную область', link: 'https://ru.hexlet.io/courses/php-object-oriented-design/lessons/modeling/theory_unit',
+    id: '1896',
+    title: 'Введение / Ruby: Составные данные',
+    description: 'Цель: Познакомиться с курсом, его целями и структурой. Рассмотреть понятие «составные данные» и понять смысл их создания и использования.',
+    link: 'https://ru.hexlet.io/courses/ruby-compound-data/lessons/intro/theory_unit',
   }],
 };

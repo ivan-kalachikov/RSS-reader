@@ -9,7 +9,7 @@ import axios from 'axios';
 import httpAdapter from 'axios/lib/adapters/http';
 import path from 'path';
 import app from '../src/app';
-import rssParser from '../src/rss-parser';
+import parseRss from '../src/parse-rss.js';
 import expectedParsedData from './__fixtures__/expected';
 
 const feedbackMessages = {
@@ -29,10 +29,10 @@ beforeEach(async () => {
   app();
 });
 
-test('rssParser test', async () => {
+test('parseRss test', async () => {
   const pathToRss = path.resolve(__dirname, '__fixtures__/rss-feed.xml');
   const rssData = await fs.readFile(pathToRss, 'utf8');
-  expect(rssParser(rssData)).toEqual(expectedParsedData);
+  expect(parseRss(rssData)).toEqual(expectedParsedData);
 });
 
 test('wrong url', async () => {

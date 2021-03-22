@@ -12,10 +12,6 @@ const renderModal = (title, description, link) => {
 
 const renderFeedback = (msg, type = 'success') => {
   const feedbackEl = document.querySelector('.feedback');
-  if (!msg) {
-    feedbackEl.classList.remove('danger', 'success');
-    return;
-  }
   feedbackEl.textContent = msg;
   const removedClass = `text-${type === 'success' ? 'danger' : 'success'}`;
   const addedClass = `text-${type}`;
@@ -54,14 +50,14 @@ const renderPosts = (posts, openedPostsIds) => {
 
   postsContainer.innerHTML = '';
   const postsTitle = document.createElement('h2');
-  postsTitle.textContent = i18next.t('ui.postsTitle');
   const postsList = document.createElement('ul');
+  postsTitle.textContent = i18next.t('ui.postsTitle');
   postsList.classList.add('list-group');
 
   posts.forEach(({
-    title, link, description,
-  }, i) => {
-    const id = posts.length - i;
+    id, title, link, description,
+  }) => {
+    const isOpened = openedPostsIds.includes(id);
     const postItem = document.createElement('li');
     postItem.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start');
 
@@ -70,7 +66,7 @@ const renderPosts = (posts, openedPostsIds) => {
     postItemLink.setAttribute('target', '_blank');
     postItemLink.setAttribute('rel', 'noopener noreferrer');
     postItemLink.dataset.id = id;
-    const linkClass = openedPostsIds.includes(id) ? 'font-weight-normal' : 'font-weight-bold';
+    const linkClass = isOpened ? 'font-weight-normal' : 'font-weight-bold';
     postItemLink.classList.add(linkClass);
     postItemLink.textContent = title;
 

@@ -17,7 +17,9 @@ export default (data) => {
     const postTitle = item.querySelector('title').textContent;
     const postDescription = item.querySelector('description').textContent;
     const postLink = item.querySelector('link').textContent;
+    const postId = item.querySelector('guid').textContent || postLink;
     const postItem = {
+      id: postId,
       title: postTitle,
       description: postDescription,
       link: postLink,
