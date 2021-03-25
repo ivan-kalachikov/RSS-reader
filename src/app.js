@@ -66,7 +66,8 @@ const app = () => {
   });
 
   const updateStateWithNewFeed = ((url, feed) => {
-    if (!watchedState.data.feeds.some(({ url: itemUrl }) => itemUrl === url)) {
+    const isUniqueUrl = !watchedState.data.feeds.some(({ url: itemUrl }) => itemUrl === url);
+    if (isUniqueUrl) {
       watchedState.data.feeds = [{ url, data: feed }, ...watchedState.data.feeds];
     }
   });
@@ -92,34 +93,25 @@ const app = () => {
       });
   };
 
-  const getDataAndUpdate = (url) => getRawData(url)
-    .then((response) => {
-      const { feed, posts } = parseRss(response.data.contents);
-      updateStateWithNewFeed(url, feed);
-      updateStateWithNewPosts(posts);
-      setTimeout(() => {
-        getDataAndUpdate(url);
-      }, UPDATE_INTERVAL);
-    });
+  const updateByTimer = (url, updateFunction) => {
+    setTimeout(() => {
+      updateFunction('update', url);
+    }, UPDATE_INTERVAL);
+  };
 
-  const addUrlHandler = (url) => {
-    const feedUrls = _.map(watchedState.data.feeds, 'url');
-    const schema = yup.string().required().url().notOneOf(feedUrls);
-    watchedState.form.valid = true;
-    schema.validate(url)
-      .then(() => {
-        watchedState.loadingProcess.error = '';
-        watchedState.loadingProcess.state = 'fetching';
-        watchedState.form.error = '';
-        return getDataAndUpdate(url);
-      })
-      .then(() => {
-        watchedState.loadingProcess.state = 'idle';
-      })
-      .catch((error) => {
-        if (error.name === 'ValidationError') {
-          watchedState.form.error = error.message;
-          watchedState.form.valid = false;
+  const getDataAndUpdate = (type, url) => {
+    getRawData(url)
+      .then((response) => {
+        const { feed, posts } = parseRss(response.data.contents);
+        updateStateWithNewPosts(posts);
+        updateByTimer(url, getDataAndUpdate);
+        if (type === 'add') {
+          updateStateWithNewFeed(url, feed);
+          watchedState.loadingProcess.state = 'idle';
+        }
+      }).catch((error) => {
+        if (type === 'update') {
+          updateByTimer(url, getDataAndUpdate);
         } else {
           watchedState.loadingProcess.error = error.message;
           watchedState.loadingProcess.state = 'error';
@@ -127,11 +119,27 @@ const app = () => {
       });
   };
 
+  const validateAndProceedWithData = (url) => {
+    const feedUrls = _.map(watchedState.data.feeds, 'url');
+    const schema = yup.string().required().url().notOneOf(feedUrls);
+    watchedState.form.valid = true;
+    try {
+      schema.validateSync(url);
+      watchedState.loadingProcess.error = '';
+      watchedState.loadingProcess.state = 'fetching';
+      watchedState.form.error = '';
+      getDataAndUpdate('add', url);
+    } catch (error) {
+      watchedState.form.error = error.message;
+      watchedState.form.valid = false;
+    }
+  };
+
   const form = document.querySelector('.rss-form');
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     const urlValue = new FormData(e.target).get('url');
-    addUrlHandler(urlValue);
+    validateAndProceedWithData(urlValue);
   });
 
   const postItemsGroup = document.querySelector('.posts');
