@@ -15,7 +15,7 @@ const loadingProcessStateHandler = (loadingProcessState, state) => {
       inputUrl.readOnly = false;
       inputUrl.value = '';
       inputUrl.focus();
-      renderFeedback(state.ui.i18next.t('feedbackMessages.newUrlAdded'), 'success');
+      renderFeedback(state.ui.i18n.t('feedbackMessages.newUrlAdded'), 'success');
       break;
     case 'error':
       submit.disabled = false;
@@ -34,13 +34,13 @@ export default (path, value, state) => {
       loadingProcessStateHandler(value, state);
       break;
     case 'data.feeds':
-      renderFeeds(value, state.ui.i18next);
+      renderFeeds(value, state.ui.i18n);
       break;
     case 'data.posts':
-      renderPosts(value, state.ui.openedPostsIds, state.ui.i18next);
+      renderPosts(value, state.ui.openedPostsIds, state.ui.i18n);
       break;
     case 'ui.openedPostsIds':
-      renderPosts(state.data.posts, value, state.ui.i18next);
+      renderPosts(state.data.posts, value, state.ui.i18n);
       break;
     case 'form.valid':
       inputUrl.classList.toggle('is-invalid');

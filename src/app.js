@@ -12,7 +12,8 @@ import ru from './locales/ru.js';
 const UPDATE_INTERVAL = 5000;
 
 const app = () => {
-  i18next.init({
+  const i18n = i18next.createInstance();
+  i18n.init({
     lng: 'ru',
     resources: {
       ru,
@@ -33,7 +34,7 @@ const app = () => {
       },
       ui: {
         openedPostsIds: [],
-        i18next,
+        i18n,
       },
     };
 
@@ -43,10 +44,10 @@ const app = () => {
 
     yup.setLocale({
       mixed: {
-        notOneOf: watchedState.ui.i18next.t('feedbackMessages.alreadyExistRSS'),
+        notOneOf: watchedState.ui.i18n.t('feedbackMessages.alreadyExistRSS'),
       },
       string: {
-        url: watchedState.ui.i18next.t('feedbackMessages.invalidURL'),
+        url: watchedState.ui.i18n.t('feedbackMessages.invalidURL'),
       },
     });
 
@@ -84,14 +85,14 @@ const app = () => {
     const addNewFeed = (url) => {
       getRawData(url)
         .then((response) => {
-          const { feed, posts } = parseRss(response.data.contents);
+          const { feed, posts } = parseRss(response.data.contents, watchedState.ui.i18n.t('feedbackMessages.invalidRSS'));
           updateStateWithNewFeed(url, feed);
           updateStateWithNewPosts(posts);
           watchedState.loadingProcess.state = 'idle';
           updatePosts(url);
         }).catch((error) => {
           const isNetworkError = error.request !== undefined;
-          watchedState.loadingProcess.error = isNetworkError ? watchedState.ui.i18next.t('feedbackMessages.networkError') : error.message;
+          watchedState.loadingProcess.error = isNetworkError ? watchedState.ui.i18n.t('feedbackMessages.networkError') : error.message;
           watchedState.loadingProcess.state = 'error';
         });
     };

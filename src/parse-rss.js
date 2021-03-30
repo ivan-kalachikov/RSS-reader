@@ -1,11 +1,9 @@
-import i18next from 'i18next';
-
-export default (data) => {
+export default (data, errorMsg = 'Parsing error') => {
   const parser = new DOMParser();
   const doc = parser.parseFromString(data, 'application/xml');
 
   if (doc.querySelector('parsererror')) {
-    throw new Error(i18next.t('feedbackMessages.invalidRSS'));
+    throw new Error(errorMsg);
   }
 
   const title = doc.querySelector('channel > title').textContent;

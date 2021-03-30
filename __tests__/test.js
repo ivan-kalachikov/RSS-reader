@@ -29,20 +29,6 @@ beforeEach(async () => {
   app();
 });
 
-test('parseRss test', async () => {
-  const pathToRss = path.resolve(__dirname, '__fixtures__/rss-feed.xml');
-  const rssData = await fs.readFile(pathToRss, 'utf8');
-  expect(parseRss(rssData)).toEqual(expectedParsedData);
-});
-
-test('wrong url', async () => {
-  const input = screen.getByRole('textbox', { name: 'url' });
-  const button = screen.getByRole('button', { name: 'add' });
-  userEvent.type(input, 'wrong url');
-  userEvent.click(button);
-  expect(await screen.findByText(feedbackMessages.invalidURL)).toBeInTheDocument();
-});
-
 test('add success / add exist url error', async () => {
   const input = screen.getByRole('textbox', { name: 'url' });
   const button = screen.getByRole('button', { name: 'add' });
@@ -58,6 +44,20 @@ test('add success / add exist url error', async () => {
   userEvent.type(input, 'https://ru.hexlet.io/lessons.rss');
   userEvent.click(button);
   expect(await screen.findByText(feedbackMessages.alreadyExistRSS)).toBeInTheDocument();
+});
+
+test('parseRss test', async () => {
+  const pathToRss = path.resolve(__dirname, '__fixtures__/rss-feed.xml');
+  const rssData = await fs.readFile(pathToRss, 'utf8');
+  expect(parseRss(rssData)).toEqual(expectedParsedData);
+});
+
+test('wrong url', async () => {
+  const input = screen.getByRole('textbox', { name: 'url' });
+  const button = screen.getByRole('button', { name: 'add' });
+  userEvent.type(input, 'wrong url');
+  userEvent.click(button);
+  expect(await screen.findByText(feedbackMessages.invalidURL)).toBeInTheDocument();
 });
 
 test('block ui while getting data, and unblock after that', async () => {

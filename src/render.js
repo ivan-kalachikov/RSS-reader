@@ -18,11 +18,11 @@ const renderFeedback = (msg, type = 'success') => {
   feedbackEl.classList.remove(removedClass);
 };
 
-const renderFeeds = (feeds, i18next) => {
+const renderFeeds = (feeds, i18n) => {
   const feedsContainer = document.querySelector('.feeds');
   feedsContainer.innerHTML = '';
   const feedsTitle = document.createElement('h2');
-  feedsTitle.textContent = i18next.t('ui.feedsTitle');
+  feedsTitle.textContent = i18n.t('ui.feedsTitle');
   const feedsList = document.createElement('ul');
   feedsList.classList.add('list-group', 'mb-5');
 
@@ -44,12 +44,12 @@ const renderFeeds = (feeds, i18next) => {
   feedsContainer.appendChild(fragment);
 };
 
-const renderPosts = (posts, openedPostsIds, i18next) => {
+const renderPosts = (posts, openedPostsIds, i18n) => {
   const postsContainer = document.querySelector('.posts');
   postsContainer.innerHTML = '';
   const postsTitle = document.createElement('h2');
   const postsList = document.createElement('ul');
-  postsTitle.textContent = i18next.t('ui.postsTitle');
+  postsTitle.textContent = i18n.t('ui.postsTitle');
   postsList.classList.add('list-group');
 
   posts.forEach(({
@@ -71,7 +71,7 @@ const renderPosts = (posts, openedPostsIds, i18next) => {
     const postItemButton = document.createElement('button');
     postItemButton.setAttribute('type', 'button');
     postItemButton.classList.add('btn', 'btn-primary', 'btn-sm');
-    postItemButton.textContent = i18next.t('ui.previewButton');
+    postItemButton.textContent = i18n.t('ui.previewButton');
     postItemButton.dataset.id = id;
     postItemButton.dataset.toggle = 'modal';
     postItemButton.dataset.target = '#modal';
