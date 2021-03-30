@@ -91,7 +91,7 @@ const app = () => {
           updatePosts(url);
         }).catch((error) => {
           const isNetworkError = error.request;
-          watchedState.loadingProcess.error = isNetworkError ? watchedState.ui.i18n.t('feedbackMessages.networkError') : error.message;
+          watchedState.loadingProcess.error = isNetworkError ? watchedState.ui.i18next.t('feedbackMessages.networkError') : error.message;
           watchedState.loadingProcess.state = 'error';
         });
     };
