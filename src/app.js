@@ -90,7 +90,7 @@ const app = () => {
           watchedState.loadingProcess.state = 'idle';
           updatePosts(url);
         }).catch((error) => {
-          const isNetworkError = error.request;
+          const isNetworkError = error.request !== undefined;
           watchedState.loadingProcess.error = isNetworkError ? watchedState.ui.i18next.t('feedbackMessages.networkError') : error.message;
           watchedState.loadingProcess.state = 'error';
         });
