@@ -48,6 +48,7 @@ test('add success / add exist url error', async () => {
   const button = screen.getByRole('button', { name: 'add' });
   const successfulResponse = await fs.readFile(path.resolve(__dirname, '__fixtures__', 'successful-response.json'), 'utf-8');
   nock('https://hexlet-allorigins.herokuapp.com')
+    .persist(true)
     .get('/get')
     .query(true)
     .reply(200, successfulResponse);

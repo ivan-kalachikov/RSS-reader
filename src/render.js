@@ -1,4 +1,3 @@
-import i18next from 'i18next';
 import 'bootstrap/js/dist/modal.js';
 
 const renderModal = (title, description, link) => {
@@ -19,7 +18,7 @@ const renderFeedback = (msg, type = 'success') => {
   feedbackEl.classList.remove(removedClass);
 };
 
-const renderFeeds = (feeds) => {
+const renderFeeds = (feeds, i18next) => {
   const feedsContainer = document.querySelector('.feeds');
   feedsContainer.innerHTML = '';
   const feedsTitle = document.createElement('h2');
@@ -45,9 +44,8 @@ const renderFeeds = (feeds) => {
   feedsContainer.appendChild(fragment);
 };
 
-const renderPosts = (posts, openedPostsIds) => {
+const renderPosts = (posts, openedPostsIds, i18next) => {
   const postsContainer = document.querySelector('.posts');
-
   postsContainer.innerHTML = '';
   const postsTitle = document.createElement('h2');
   const postsList = document.createElement('ul');

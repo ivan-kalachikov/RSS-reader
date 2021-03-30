@@ -1,6 +1,5 @@
 // @ts-check
 
-import i18next from 'i18next';
 import { renderFeeds, renderPosts, renderFeedback } from './render.js';
 
 const loadingProcessStateHandler = (loadingProcessState, state) => {
@@ -16,7 +15,7 @@ const loadingProcessStateHandler = (loadingProcessState, state) => {
       inputUrl.readOnly = false;
       inputUrl.value = '';
       inputUrl.focus();
-      renderFeedback(i18next.t('feedbackMessages.newUrlAdded'), 'success');
+      renderFeedback(state.ui.i18next.t('feedbackMessages.newUrlAdded'), 'success');
       break;
     case 'error':
       submit.disabled = false;
@@ -35,13 +34,13 @@ export default (path, value, state) => {
       loadingProcessStateHandler(value, state);
       break;
     case 'data.feeds':
-      renderFeeds(value);
+      renderFeeds(value, state.ui.i18next);
       break;
     case 'data.posts':
-      renderPosts(value, state.ui.openedPostsIds);
+      renderPosts(value, state.ui.openedPostsIds, state.ui.i18next);
       break;
     case 'ui.openedPostsIds':
-      renderPosts(state.data.posts, value);
+      renderPosts(state.data.posts, value, state.ui.i18next);
       break;
     case 'form.valid':
       inputUrl.classList.toggle('is-invalid');
