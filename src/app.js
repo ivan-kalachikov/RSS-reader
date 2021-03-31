@@ -90,12 +90,11 @@ const app = () => {
           updateStateWithNewFeed(url, feed);
           updateStateWithNewPosts(posts);
           watchedState.loadingProcess.state = 'idle';
-          updatePosts(url);
+          setTimeout(() => {
+            updatePosts(url);
+          }, UPDATE_INTERVAL);
         }).catch((error) => {
           const isNetworkError = error.request !== undefined;
-          console.log('============isNetworkError=======', isNetworkError);
-          console.log('============error================', error);
-          console.log('============error.message========', error.message);
           watchedState.loadingProcess.error = isNetworkError ? watchedState.ui.i18n.t('feedbackMessages.networkError') : error.message;
           watchedState.loadingProcess.state = 'error';
         });
