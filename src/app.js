@@ -65,7 +65,7 @@ const app = () => {
 
     const getRawData = (url) => {
       const encodedURI = encodeURIComponent(url);
-      const normalizedUrl = `https://hexlet-allorigins.herokuapp.com/get?url=${encodedURI}&disableCache=true`;
+      const normalizedUrl = `https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodedURI}`;
       return axios.get(normalizedUrl);
     };
 
