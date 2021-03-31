@@ -85,13 +85,17 @@ const app = () => {
     const addNewFeed = (url) => {
       getRawData(url)
         .then((response) => {
-          const { feed, posts } = parseRss(response.data.contents, watchedState.ui.i18n.t('feedbackMessages.invalidRSS'));
+          const parsingErrorMessage = watchedState.ui.i18n.t('feedbackMessages.invalidRSS');
+          const { feed, posts } = parseRss(response.data.contents, parsingErrorMessage);
           updateStateWithNewFeed(url, feed);
           updateStateWithNewPosts(posts);
           watchedState.loadingProcess.state = 'idle';
           updatePosts(url);
         }).catch((error) => {
           const isNetworkError = error.request !== undefined;
+          console.log('============isNetworkError=======', isNetworkError);
+          console.log('============error================', error);
+          console.log('============error.message========', error.message);
           watchedState.loadingProcess.error = isNetworkError ? watchedState.ui.i18n.t('feedbackMessages.networkError') : error.message;
           watchedState.loadingProcess.state = 'error';
         });
