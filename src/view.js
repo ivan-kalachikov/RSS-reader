@@ -1,8 +1,10 @@
 // @ts-check
 
-import { renderFeeds, renderPosts, renderFeedback } from './render.js';
+import {
+  renderModal, renderFeeds, renderPosts, renderFeedback,
+} from './render.js';
 
-const loadingProcessStateHandler = (loadingProcessState, state) => {
+const loadingProcessStateHandler = (loadingProcessState, state, i18n) => {
   const inputUrl = document.querySelector('.form-control[name=url]');
   const submit = document.querySelector('.rss-form .btn');
   switch (loadingProcessState) {
@@ -15,7 +17,7 @@ const loadingProcessStateHandler = (loadingProcessState, state) => {
       inputUrl.readOnly = false;
       inputUrl.value = '';
       inputUrl.focus();
-      renderFeedback(state.ui.i18n.t('feedbackMessages.newUrlAdded'), 'success');
+      renderFeedback(i18n.t('feedbackMessages.newUrlAdded'), 'success');
       break;
     case 'error':
       submit.disabled = false;
@@ -27,24 +29,27 @@ const loadingProcessStateHandler = (loadingProcessState, state) => {
   }
 };
 
-export default (path, value, state) => {
+export default (path, value, state, i18n) => {
   const inputUrl = document.querySelector('.form-control[name=url]');
   switch (path) {
-    case 'loadingProcess.state':
-      loadingProcessStateHandler(value, state);
-      break;
-    case 'data.feeds':
-      renderFeeds(value, state.ui.i18n);
-      break;
-    case 'data.posts':
-      renderPosts(value, state.ui.openedPostsIds, state.ui.i18n);
-      break;
-    case 'ui.openedPostsIds':
-      renderPosts(state.data.posts, value, state.ui.i18n);
-      break;
     case 'form.valid':
       inputUrl.classList.toggle('is-invalid');
       renderFeedback(state.form.error, 'danger');
+      break;
+    case 'loadingProcess.state':
+      loadingProcessStateHandler(value, state, i18n);
+      break;
+    case 'data.feeds':
+      renderFeeds(value, i18n);
+      break;
+    case 'data.posts':
+      renderPosts(value, state.ui.openedPostsIds, i18n);
+      break;
+    case 'ui.openedPostsIds':
+      renderPosts(state.data.posts, value, i18n);
+      break;
+    case 'ui.modal':
+      renderModal(value);
       break;
     default:
       break;

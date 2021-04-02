@@ -8,11 +8,14 @@ import _ from 'lodash';
 import view from './view.js';
 import parseRss from './parse-rss.js';
 import ru from './locales/ru.js';
+import yupLocale from './locales/yup_locale.js';
 
 const UPDATE_INTERVAL = 5000;
 
 const app = () => {
   const i18n = i18next.createInstance();
+  yup.setLocale(yupLocale);
+
   i18n.init({
     lng: 'ru',
     resources: {
@@ -34,21 +37,12 @@ const app = () => {
       },
       ui: {
         openedPostsIds: [],
-        i18n,
+        modal: {},
       },
     };
 
     const watchedState = onChange(state, (path, value) => {
-      view(path, value, state);
-    });
-
-    yup.setLocale({
-      mixed: {
-        notOneOf: watchedState.ui.i18n.t('feedbackMessages.alreadyExistRSS'),
-      },
-      string: {
-        url: watchedState.ui.i18n.t('feedbackMessages.invalidURL'),
-      },
+      view(path, value, state, i18n);
     });
 
     const updateStateWithNewFeed = ((url, feed) => {
@@ -63,18 +57,19 @@ const app = () => {
       }
     });
 
-    const getRawData = (url) => {
+    const normalizeUrl = (url) => {
       const encodedURI = encodeURIComponent(url);
       const normalizedUrl = `https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodedURI}`;
-      return axios.get(normalizedUrl);
+      return normalizedUrl;
     };
 
     const updatePosts = (url) => {
-      getRawData(url)
+      axios.get(normalizeUrl(url))
         .then((response) => {
           const { posts } = parseRss(response.data.contents);
           updateStateWithNewPosts(posts);
         })
+        .catch(() => {})
         .finally(() => {
           setTimeout(() => {
             updatePosts(url);
@@ -83,9 +78,11 @@ const app = () => {
     };
 
     const addNewFeed = (url) => {
-      getRawData(url)
+      watchedState.loadingProcess.error = '';
+      watchedState.loadingProcess.state = 'fetching';
+      axios.get(normalizeUrl(url))
         .then((response) => {
-          const parsingErrorMessage = watchedState.ui.i18n.t('feedbackMessages.invalidRSS');
+          const parsingErrorMessage = i18n.t('feedbackMessages.invalidRSS');
           const { feed, posts } = parseRss(response.data.contents, parsingErrorMessage);
           updateStateWithNewFeed(url, feed);
           updateStateWithNewPosts(posts);
@@ -95,24 +92,19 @@ const app = () => {
           }, UPDATE_INTERVAL);
         }).catch((error) => {
           const isNetworkError = error.request !== undefined;
-          watchedState.loadingProcess.error = isNetworkError ? watchedState.ui.i18n.t('feedbackMessages.networkError') : error.message;
+          watchedState.loadingProcess.error = isNetworkError ? i18n.t('feedbackMessages.networkError') : error.message;
           watchedState.loadingProcess.state = 'error';
         });
     };
 
-    const validateAndProceedWithData = (url) => {
+    const validate = (value) => {
       const feedUrls = _.map(watchedState.data.feeds, 'url');
       const schema = yup.string().required().url().notOneOf(feedUrls);
       try {
-        schema.validateSync(url);
-        watchedState.form.valid = true;
-        watchedState.form.error = '';
-        watchedState.loadingProcess.error = '';
-        watchedState.loadingProcess.state = 'fetching';
-        addNewFeed(url);
-      } catch (error) {
-        watchedState.form.error = error.message;
-        watchedState.form.valid = false;
+        schema.validateSync(value);
+        return null;
+      } catch (err) {
+        return err;
       }
     };
 
@@ -120,7 +112,17 @@ const app = () => {
     form.addEventListener('submit', (e) => {
       e.preventDefault();
       const urlValue = new FormData(e.target).get('url');
-      validateAndProceedWithData(urlValue);
+      const validationError = validate(urlValue);
+      if (validationError !== null) {
+        const errorKeys = validationError.errors;
+        const errorMsg = errorKeys.map((key) => i18n.t(key)).join('\n');
+        watchedState.form.error = errorMsg;
+        watchedState.form.valid = false;
+      } else {
+        watchedState.form.valid = true;
+        watchedState.form.error = '';
+        addNewFeed(urlValue);
+      }
     });
 
     const postItemsGroup = document.querySelector('.posts');
@@ -128,6 +130,15 @@ const app = () => {
       const { id } = e.target.dataset;
       if (!watchedState.ui.openedPostsIds.includes(id)) {
         watchedState.ui.openedPostsIds = [id, ...watchedState.ui.openedPostsIds];
+      }
+    });
+
+    postItemsGroup.addEventListener('click', (e) => {
+      const isButton = e.target.classList.contains('btn');
+      if (isButton) {
+        const postId = e.target.dataset.id;
+        const post = state.data.posts.find(({ id }) => postId === id);
+        watchedState.ui.modal = post;
       }
     });
   });

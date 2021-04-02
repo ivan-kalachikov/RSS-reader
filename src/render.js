@@ -1,6 +1,4 @@
-import 'bootstrap/js/dist/modal.js';
-
-const renderModal = (title, description, link) => {
+const renderModal = ({ title, description, link }) => {
   const modalTitle = document.querySelector('.modal-title');
   const modalBody = document.querySelector('.modal-body');
   const modalLink = document.querySelector('.modal-footer a.btn');
@@ -53,7 +51,7 @@ const renderPosts = (posts, openedPostsIds, i18n) => {
   postsList.classList.add('list-group');
 
   posts.forEach(({
-    id, title, link, description,
+    id, title, link,
   }) => {
     const isOpened = openedPostsIds.includes(id);
     const postItem = document.createElement('li');
@@ -76,11 +74,6 @@ const renderPosts = (posts, openedPostsIds, i18n) => {
     postItemButton.dataset.toggle = 'modal';
     postItemButton.dataset.target = '#modal';
 
-    postItemButton.addEventListener('click', (e) => {
-      e.preventDefault();
-      renderModal(title, description, link);
-    });
-
     postItem.appendChild(postItemLink);
     postItem.appendChild(postItemButton);
     postsList.appendChild(postItem);
@@ -92,4 +85,6 @@ const renderPosts = (posts, openedPostsIds, i18n) => {
   postsContainer.appendChild(fragment);
 };
 
-export { renderFeeds, renderPosts, renderFeedback };
+export {
+  renderModal, renderFeeds, renderPosts, renderFeedback,
+};
