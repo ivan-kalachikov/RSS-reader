@@ -69,7 +69,7 @@ const app = () => {
           const { posts } = parseRss(response.data.contents);
           updateStateWithNewPosts(posts);
         })
-        .catch(() => {})
+        .catch(console.log)
         .finally(() => {
           setTimeout(() => {
             updatePosts(url);
