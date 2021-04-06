@@ -3,7 +3,7 @@ export default (data) => {
   const doc = parser.parseFromString(data, 'application/xml');
 
   if (doc.querySelector('parsererror')) {
-    const parseError = new Error();
+    const parseError = new Error('rss parsererror');
     parseError.isParseError = true;
     throw parseError;
   }
