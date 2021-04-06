@@ -1,9 +1,11 @@
-export default (data, errorMsg = 'Parsing error') => {
+export default (data) => {
   const parser = new DOMParser();
   const doc = parser.parseFromString(data, 'application/xml');
 
   if (doc.querySelector('parsererror')) {
-    throw new Error(errorMsg);
+    const parseError = new Error();
+    parseError.isParseError = true;
+    throw parseError;
   }
 
   const title = doc.querySelector('channel > title').textContent;
@@ -15,9 +17,7 @@ export default (data, errorMsg = 'Parsing error') => {
     const postTitle = item.querySelector('title').textContent;
     const postDescription = item.querySelector('description').textContent;
     const postLink = item.querySelector('link').textContent;
-    const postId = item.querySelector('guid').textContent || postLink;
     const postItem = {
-      id: postId,
       title: postTitle,
       description: postDescription,
       link: postLink,

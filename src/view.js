@@ -17,12 +17,12 @@ const loadingProcessStateHandler = (loadingProcessState, state, i18n) => {
       inputUrl.readOnly = false;
       inputUrl.value = '';
       inputUrl.focus();
-      renderFeedback(i18n.t('feedbackMessages.newUrlAdded'), 'success');
+      renderFeedback('feedbackMessages.newUrlAdded', i18n, 'success');
       break;
     case 'error':
       submit.disabled = false;
       inputUrl.readOnly = false;
-      renderFeedback(state.loadingProcess.error, 'danger');
+      renderFeedback(state.loadingProcess.error, i18n, 'danger');
       break;
     default:
       throw new Error(`Unknown status ${loadingProcessState}`);
@@ -34,7 +34,7 @@ export default (path, value, state, i18n) => {
   switch (path) {
     case 'form.valid':
       inputUrl.classList.toggle('is-invalid');
-      renderFeedback(state.form.error, 'danger');
+      renderFeedback(state.form.error, i18n, 'danger');
       break;
     case 'loadingProcess.state':
       loadingProcessStateHandler(value, state, i18n);

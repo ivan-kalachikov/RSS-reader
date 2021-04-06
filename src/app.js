@@ -4,7 +4,7 @@ import axios from 'axios';
 import i18next from 'i18next';
 import onChange from 'on-change';
 import * as yup from 'yup';
-import _ from 'lodash';
+import { differenceBy, uniqueId } from 'lodash';
 import view from './view.js';
 import parseRss from './parse-rss.js';
 import ru from './locales/ru.js';
@@ -45,17 +45,19 @@ const app = () => {
       view(path, value, state, i18n);
     });
 
-    const updateStateWithNewFeed = ((url, feed) => {
-      watchedState.data.feeds = [{ url, data: feed }, ...watchedState.data.feeds];
-    });
+    const updateStateWithNewFeed = (url, feed, id) => {
+      watchedState.data.feeds = [{ id, url, data: feed }, ...watchedState.data.feeds];
+    };
 
-    const updateStateWithNewPosts = ((posts) => {
+    const updateStateWithNewPosts = (posts, feedId) => {
       const existPosts = watchedState.data.posts;
-      const newPosts = _.differenceWith(posts, existPosts, _.isEqual);
+      const existPostsByFeed = existPosts.filter(({ feedId: postFeedId }) => feedId === postFeedId);
+      const newPosts = differenceBy(posts, existPostsByFeed, 'title');
       if (newPosts.length) {
-        watchedState.data.posts = [...newPosts, ...existPosts];
+        const newPostsWithIds = newPosts.map((post) => ({ ...post, feedId, id: uniqueId() }));
+        watchedState.data.posts = [...newPostsWithIds, ...existPosts];
       }
-    });
+    };
 
     const normalizeUrl = (url) => {
       const encodedURI = encodeURIComponent(url);
@@ -63,16 +65,16 @@ const app = () => {
       return normalizedUrl;
     };
 
-    const updatePosts = (url) => {
+    const updatePosts = (url, feedId) => {
       axios.get(normalizeUrl(url))
         .then((response) => {
           const { posts } = parseRss(response.data.contents);
-          updateStateWithNewPosts(posts);
+          updateStateWithNewPosts(posts, feedId);
         })
         .catch(console.log)
         .finally(() => {
           setTimeout(() => {
-            updatePosts(url);
+            updatePosts(url, feedId);
           }, UPDATE_INTERVAL);
         });
     };
@@ -82,23 +84,28 @@ const app = () => {
       watchedState.loadingProcess.state = 'fetching';
       axios.get(normalizeUrl(url))
         .then((response) => {
-          const parsingErrorMessage = i18n.t('feedbackMessages.invalidRSS');
-          const { feed, posts } = parseRss(response.data.contents, parsingErrorMessage);
-          updateStateWithNewFeed(url, feed);
-          updateStateWithNewPosts(posts);
+          const { feed, posts } = parseRss(response.data.contents);
+          const feedId = uniqueId();
+          updateStateWithNewFeed(url, feed, feedId);
+          updateStateWithNewPosts(posts, feedId);
           watchedState.loadingProcess.state = 'idle';
           setTimeout(() => {
-            updatePosts(url);
+            updatePosts(url, feedId);
           }, UPDATE_INTERVAL);
         }).catch((error) => {
-          const isNetworkError = error.request !== undefined;
-          watchedState.loadingProcess.error = isNetworkError ? i18n.t('feedbackMessages.networkError') : error.message;
+          if (error.isParseError) {
+            watchedState.loadingProcess.error = 'feedbackMessages.invalidRSS';
+          } else if (error.isAxiosError) {
+            watchedState.loadingProcess.error = 'feedbackMessages.networkError';
+          } else {
+            watchedState.loadingProcess.error = { key: 'feedbackMessages.unknownError', error };
+          }
           watchedState.loadingProcess.state = 'error';
         });
     };
 
     const validate = (value) => {
-      const feedUrls = _.map(watchedState.data.feeds, 'url');
+      const feedUrls = watchedState.data.feeds.map(({ url }) => url);
       const schema = yup.string().required().url().notOneOf(feedUrls);
       try {
         schema.validateSync(value);
@@ -114,9 +121,7 @@ const app = () => {
       const urlValue = new FormData(e.target).get('url');
       const validationError = validate(urlValue);
       if (validationError !== null) {
-        const errorKeys = validationError.errors;
-        const errorMsg = errorKeys.map((key) => i18n.t(key)).join('\n');
-        watchedState.form.error = errorMsg;
+        watchedState.form.error = validationError.message;
         watchedState.form.valid = false;
       } else {
         watchedState.form.valid = true;

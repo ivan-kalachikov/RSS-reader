@@ -17,8 +17,6 @@
   },
   "homepage": "https://github.com/Ivankalachikov/frontend-project-lvl3#readme",
   "jest": {
-    "verbose": true,
-    "testURL": "http://localhost/",
     "modulePathIgnorePatterns": [
       "__fixtures__"
     ]
@@ -29,7 +27,7 @@
     "bootstrap": "^4.6.0",
     "i18next": "^19.8.8",
     "jquery": "^3.5.1",
-    "lodash": "^4.17.20",
+    "lodash": "^4.17.21",
     "on-change": "^2.2.3",
     "popper.js": "^1.16.1",
     "style-loader": "^2.0.0",

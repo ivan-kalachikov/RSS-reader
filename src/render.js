@@ -7,13 +7,13 @@ const renderModal = ({ title, description, link }) => {
   modalLink.setAttribute('href', link);
 };
 
-const renderFeedback = (msg, type = 'success') => {
+const renderFeedback = (error, i18n, type = 'success') => {
+  const feedbackText = error.key ? i18n.t(error.key, { error: error.error }) : i18n.t(error);
   const feedbackEl = document.querySelector('.feedback');
-  feedbackEl.textContent = msg;
-  const removedClass = `text-${type === 'success' ? 'danger' : 'success'}`;
   const addedClass = `text-${type}`;
+  feedbackEl.textContent = feedbackText;
+  feedbackEl.classList.remove('text-success', 'text-danger');
   feedbackEl.classList.add(addedClass);
-  feedbackEl.classList.remove(removedClass);
 };
 
 const renderFeeds = (feeds, i18n) => {
