@@ -79,6 +79,16 @@ const app = () => {
         });
     };
 
+    const handleLoadingError = (error) => {
+      if (error.isParseError) {
+        return 'feedbackMessages.invalidRSS';
+      }
+      if (error.isAxiosError) {
+        return 'feedbackMessages.networkError';
+      }
+      return { key: 'feedbackMessages.unknownError', error };
+    };
+
     const addNewFeed = (url) => {
       watchedState.loadingProcess.error = '';
       watchedState.loadingProcess.state = 'fetching';
@@ -93,13 +103,8 @@ const app = () => {
             updatePosts(url, feedId);
           }, UPDATE_INTERVAL);
         }).catch((error) => {
-          if (error.isParseError) {
-            watchedState.loadingProcess.error = 'feedbackMessages.invalidRSS';
-          } else if (error.isAxiosError) {
-            watchedState.loadingProcess.error = 'feedbackMessages.networkError';
-          } else {
-            watchedState.loadingProcess.error = { key: 'feedbackMessages.unknownError', error };
-          }
+          const errorKey = handleLoadingError(error);
+          watchedState.loadingProcess.error = errorKey;
           watchedState.loadingProcess.state = 'error';
         });
     };
@@ -142,8 +147,7 @@ const app = () => {
       const isButton = e.target.classList.contains('btn');
       if (isButton) {
         const postId = e.target.dataset.id;
-        const post = state.data.posts.find(({ id }) => postId === id);
-        watchedState.ui.modal = post;
+        watchedState.ui.modal = postId;
       }
     });
   });

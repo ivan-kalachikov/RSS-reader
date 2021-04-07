@@ -49,7 +49,7 @@ export default (path, value, state, i18n) => {
       renderPosts(state.data.posts, value, i18n);
       break;
     case 'ui.modal':
-      renderModal(value);
+      renderModal(state.data.posts.find(({ id }) => value === id));
       break;
     default:
       break;
