@@ -79,7 +79,7 @@ const app = () => {
         });
     };
 
-    const handleLoadingError = (error) => {
+    const getAddingErrorKey = (error) => {
       if (error.isParseError) {
         return 'feedbackMessages.invalidRSS';
       }
@@ -103,7 +103,7 @@ const app = () => {
             updatePosts(url, feedId);
           }, UPDATE_INTERVAL);
         }).catch((error) => {
-          const errorKey = handleLoadingError(error);
+          const errorKey = getAddingErrorKey(error);
           watchedState.loadingProcess.error = errorKey;
           watchedState.loadingProcess.state = 'error';
         });
