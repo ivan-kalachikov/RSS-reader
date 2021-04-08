@@ -138,16 +138,12 @@ const app = () => {
     const postItemsGroup = document.querySelector('.posts');
     postItemsGroup.addEventListener('click', (e) => {
       const { id } = e.target.dataset;
+      const isButton = e.target.classList.contains('btn');
       if (!watchedState.ui.openedPostsIds.includes(id)) {
         watchedState.ui.openedPostsIds = [id, ...watchedState.ui.openedPostsIds];
       }
-    });
-
-    postItemsGroup.addEventListener('click', (e) => {
-      const isButton = e.target.classList.contains('btn');
       if (isButton) {
-        const postId = e.target.dataset.id;
-        watchedState.ui.modal = postId;
+        watchedState.ui.modal = id;
       }
     });
   });
