@@ -11,3 +11,18 @@ Hexlet. Проект #3 - RSS агрегатор
 [![Test Coverage](https://api.codeclimate.com/v1/badges/167a37cc2faca2efe994/test_coverage)](https://codeclimate.com/github/Ivankalachikov/frontend-project-lvl3/test_coverage)
 ![Linter](https://github.com/Ivankalachikov/frontend-project-lvl3/workflows/Linter/badge.svg)
 ![Tests](https://github.com/Ivankalachikov/frontend-project-lvl3/workflows/Tests/badge.svg)
+---
+
+### Install
+```sh
+$ npm install
+```
+### Start dev server
+```sh
+$ make develop
+```
+
+### Build
+```sh
+$ make build
+```
