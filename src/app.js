@@ -4,11 +4,13 @@ import axios from 'axios';
 import i18next from 'i18next';
 import onChange from 'on-change';
 import * as yup from 'yup';
-import { differenceBy, uniqueId } from 'lodash';
+import uniqueId from 'lodash/uniqueId';
+import differenceBy from 'lodash/differenceBy';
 import view from './view.js';
 import parseRss from './parse-rss.js';
 import ru from './locales/ru.js';
 import yupLocale from './locales/yup_locale.js';
+import 'bootstrap/js/dist/modal.js';
 
 const UPDATE_INTERVAL = 5000;
 
@@ -25,11 +27,11 @@ const app = () => {
     const state = {
       form: {
         valid: true,
-        error: '',
+        error: null,
       },
       loadingProcess: {
         state: 'idle',
-        error: '',
+        error: null,
       },
       data: {
         feeds: [],
@@ -125,11 +127,11 @@ const app = () => {
       e.preventDefault();
       const urlValue = new FormData(e.target).get('url');
       const validationError = validate(urlValue);
+      watchedState.form.valid = true;
       if (validationError !== null) {
         watchedState.form.error = validationError.message;
         watchedState.form.valid = false;
       } else {
-        watchedState.form.valid = true;
         watchedState.form.error = '';
         addNewFeed(urlValue);
       }
