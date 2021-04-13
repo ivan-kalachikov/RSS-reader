@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "test": "jest --colors",
-    "build": "npx webpack"
+    "build": "npx webpack --config webpack.config-prod.js"
   },
   "repository": {
     "type": "git",
