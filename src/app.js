@@ -62,7 +62,7 @@ const app = () => {
     };
 
     const normalizeUrl = (url) => {
-      const encodedURI = encodeURIComponent(url);
+      const encodedURI = url;
       const normalizedUrl = `https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodedURI}`;
       return normalizedUrl;
     };
