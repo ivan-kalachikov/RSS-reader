@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Новые уроки на Хекслете</title>
+    <description>Практические уроки по программированию</description>
+    <link>https: //ru.hexlet.io/</link>
+    <webMaster>info@hexlet.io</webMaster>
+    <item>
+      <title>Агрегация данных / Основы Google Sheets</title>
+      <guid isPermaLink="false">4544</guid>
+      <link>https: //ru.hexlet.io/courses/google-sheets-course/lessons/data-aggregation/theory_unit</link>
+      <description>Цель: Знакомимся с целями и задачами курса</description>
+      <pubDate>Wed,
+31 Jan 2024 14: 15: 32 +0000</pubDate>
+    </item>
+    <item>
+      <title>Автозаполнение / Основы Google Sheets</title>
+      <guid isPermaLink="false">4541</guid>
+      <link>https: //ru.hexlet.io/courses/google-sheets-course/lessons/autocomplete/theory_unit</link>
+      <description>Цель: Научимся использовать автозаполнение строк, столбцов, диапазонов.</description>
+      <pubDate>Wed,
+31 Jan 2024 14: 15: 32 +0000</pubDate>
+    </item>
+    <item>
+      <title>Форматирование таблицы / Основы Google Sheets</title>
+      <guid isPermaLink="false">4302</guid>
+      <link>https: //ru.hexlet.io/courses/google-sheets-course/lessons/formatting-tables/theory_unit</link>
+      <description>Цель: Учимся добавлять столбцы и строки, объединять ячейки.</description>
+      <pubDate>Wed,
+31 Jan 2024 14: 15: 32 +0000</pubDate>
+    </item>
+    <item>
+      <title>Форматирование содержимого ячейки / Основы Google Sheets</title>
+      <guid isPermaLink="false">4299</guid>
+      <link>https: //ru.hexlet.io/courses/google-sheets-course/lessons/cell-formatting/theory_unit</link>
+      <description>Цель: Знакомимся с целями и задачами курса</description>
+      <pubDate>Wed,
+31 Jan 2024 14: 15: 32 +0000</pubDate>
+    </item>
+    <item>
+      <title>Google Таблицы / Основы Google Sheets</title>
+      <guid isPermaLink="false">4298</guid>
+      <link>https: //ru.hexlet.io/courses/google-sheets-course/lessons/google-sheets/theory_unit</link>
+      <description>Цель: Знакомимся с Google Sheets — инструментом работы с таблицами</description>
+      <pubDate>Wed,
+31 Jan 2024 14: 15: 32 +0000</pubDate>
+    </item>
+    <item>
+      <title>Google Диск / Основы Google Sheets</title>
+      <guid isPermaLink="false">4288</guid>
+      <link>https: //ru.hexlet.io/courses/google-sheets-course/lessons/google-drive/theory_unit</link>
+      <description>Цель: Учимся заходить в Google Диск и создавать там папки и файлы</description>
+      <pubDate>Wed,
+31 Jan 2024 14: 15: 32 +0000</pubDate>
+    </item>
+    <item>
+      <title>Введение / Основы Google Sheets</title>
+      <guid isPermaLink="false">4286</guid>
+      <link>https: //ru.hexlet.io/courses/google-sheets-course/lessons/intro/theory_unit</link>
+      <description>Цель: Знакомимся с целями и задачами курса</description>
+      <pubDate>Wed,
+31 Jan 2024 14: 15: 32 +0000</pubDate>
+    </item>
+    <item>
+      <title>Наследование шаблонов / Python: Веб-разработка (Flask)</title>
+      <guid isPermaLink="false">4540</guid>
+      <link>https: //ru.hexlet.io/courses/python-flask/lessons/templates-inheritance/theory_unit</link>
+      <description>Цель: Научимся наследовать шаблоны для оптимизации верстки</description>
+      <pubDate>Tue,
+30 Jan 2024 14: 31: 27 +0000</pubDate>
+    </item>
+    <item>
+      <title>Связь многие ко многим / Java: Объектно-ориентированный дизайн</title>
+      <guid isPermaLink="false">4535</guid>
+      <link>https: //ru.hexlet.io/courses/java-object-oriented-design/lessons/many-to-many/theory_unit</link>
+      <description>Цель: Научиться правильно организовывать связь m2m</description>
+      <pubDate>Wed,
+24 Jan 2024 13: 11: 47 +0000</pubDate>
+    </item>
+    <item>
+      <title>Моделирование предметной области / Java: Объектно-ориентированный дизайн</title>
+      <guid isPermaLink="false">4534</guid>
+      <link>https: //ru.hexlet.io/courses/java-object-oriented-design/lessons/class-design/theory_unit</link>
+      <description>Цель: Познакомиться с понятием предметной области, научиться реализовывать связь один ко многим и визуализировать ее с помощью диаграммы классов (UML)</description>
+      <pubDate>Wed,
+24 Jan 2024 13: 11: 47 +0000</pubDate>
+    </item>
+  </channel>
+</rss>
