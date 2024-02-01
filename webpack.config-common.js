@@ -4,7 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
-      title: 'RSS агрегатор',
+      title: 'RSS aggregator',
       template: path.resolve(__dirname, 'index.html'),
     }),
   ],

@@ -8,19 +8,24 @@ import uniqueId from 'lodash/uniqueId';
 import differenceBy from 'lodash/differenceBy';
 import view from './view.js';
 import parseRss from './parse-rss.js';
+import en from './locales/en.js';
 import ru from './locales/ru.js';
 import yupLocale from './locales/yup_locale.js';
 import 'bootstrap/js/dist/modal.js';
+import { proxyURL } from './constants/index.js';
 
 const UPDATE_INTERVAL = 5000;
 
 const app = () => {
-  const i18n = i18next.createInstance();
+  const userLocale = navigator.languages && navigator.languages.length
+    ? navigator.languages[0]
+    : navigator.language;
+  const i18n = i18next.createInstance({ lng: userLocale });
   yup.setLocale(yupLocale);
 
   i18n.init({
-    lng: 'ru',
     resources: {
+      en,
       ru,
     },
   }).then(() => {
@@ -63,17 +68,17 @@ const app = () => {
 
     const normalizeUrl = (url) => {
       const encodedURI = encodeURIComponent(url);
-      const normalizedUrl = `https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodedURI}`;
+      const normalizedUrl = `${proxyURL}/?${encodedURI}`;
       return normalizedUrl;
     };
 
     const updatePosts = (url, feedId) => {
       axios.get(normalizeUrl(url))
         .then((response) => {
-          const { posts } = parseRss(response.data.contents);
+          const { posts } = parseRss(response.data);
           updateStateWithNewPosts(posts, feedId);
         })
-        .catch(console.log)
+        .catch(console.error)
         .finally(() => {
           setTimeout(() => {
             updatePosts(url, feedId);
@@ -96,7 +101,7 @@ const app = () => {
       watchedState.loadingProcess.state = 'fetching';
       axios.get(normalizeUrl(url))
         .then((response) => {
-          const { feed, posts } = parseRss(response.data.contents);
+          const { feed, posts } = parseRss(response.data);
           const feedId = uniqueId();
           updateStateWithNewFeed(url, feed, feedId);
           updateStateWithNewPosts(posts, feedId);
@@ -125,7 +130,7 @@ const app = () => {
     const form = document.querySelector('.rss-form');
     form.addEventListener('submit', (e) => {
       e.preventDefault();
-      const urlValue = new FormData(e.target).get('url');
+      const urlValue = new FormData(e.target).get('url').trim();
       const validationError = validate(urlValue);
       watchedState.form.valid = true;
       if (validationError !== null) {
@@ -147,6 +152,12 @@ const app = () => {
       if (isButton) {
         watchedState.ui.modal = id;
       }
+    });
+
+    const copyToClipboardLink = document.querySelector('.copy-to-clipboard');
+    copyToClipboardLink.addEventListener('click', (e) => {
+      const { url } = e.target.dataset;
+      navigator.clipboard.writeText(url);
     });
   });
 };

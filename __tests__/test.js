@@ -11,14 +11,10 @@ import path from 'path';
 import app from '../src/app';
 import parseRss from '../src/parse-rss.js';
 import expectedParsedData from './__fixtures__/expected';
+import localization from '../src/locales/en.js';
+import { proxyURL } from '../src/constants';
 
-const feedbackMessages = {
-  alreadyExistRSS: 'RSS уже существует',
-  newUrlAdded: 'RSS успешно загружен',
-  invalidURL: 'Ссылка должна быть валидным URL',
-  invalidRSS: 'Ресурс не содержит валидный RSS',
-  networkError: 'Ошибка сети',
-};
+const { feedbackMessages } = localization.translation;
 
 beforeEach(async () => {
   nock.cleanAll();
@@ -32,10 +28,10 @@ beforeEach(async () => {
 test('add success / add exist url error', async () => {
   const input = screen.getByRole('textbox', { name: 'url' });
   const button = screen.getByRole('button', { name: 'add' });
-  const successfulResponse = await fs.readFile(path.resolve(__dirname, '__fixtures__', 'successful-response.json'), 'utf-8');
-  nock('https://hexlet-allorigins.herokuapp.com')
+  const successfulResponse = await fs.readFile(path.resolve(__dirname, '__fixtures__', 'successful-response.xml'), 'utf-8');
+  nock(proxyURL)
     .persist(true)
-    .get('/get')
+    .get('/')
     .query(true)
     .reply(200, successfulResponse);
   userEvent.type(input, 'https://ru.hexlet.io/lessons.rss');
@@ -63,7 +59,7 @@ test('wrong url', async () => {
 test('block ui while getting data, and unblock after that', async () => {
   const input = screen.getByRole('textbox', { name: 'url' });
   const button = screen.getByRole('button', { name: 'add' });
-  nock('https://hexlet-allorigins.herokuapp.com')
+  nock(proxyURL)
     .get('/get')
     .query(true)
     .reply(200);
@@ -82,8 +78,8 @@ test('block ui while getting data, and unblock after that', async () => {
 test('invalid rss error', async () => {
   const input = screen.getByRole('textbox', { name: 'url' });
   const button = screen.getByRole('button', { name: 'add' });
-  nock('https://hexlet-allorigins.herokuapp.com')
-    .get('/get')
+  nock(proxyURL)
+    .get('/')
     .query(true)
     .reply(200);
   userEvent.type(input, 'https://ru.hexlet.io/invalid.rss');
