@@ -1,8 +1,12 @@
-Hexlet. Проект #3 - RSS агрегатор
----
-[Rss Reader](https://frontend-project-lvl3-ashy.vercel.app/) – сервис для агрегации RSS-потоков, с помощью которых удобно читать разнообразные источники, например, блоги. Он позволяет добавлять неограниченное количество RSS-лент, сам их обновляет и добавляет новые записи в общий поток.
+# RSS aggregator
 
- https://frontend-project-lvl3-ashy.vercel.app/
+## Description
+[Rss Reader](https://rss-reader.ivankalachikov.vercel.app/) is a service for aggregating RSS feeds, which makes it convenient to read various sources, such as blogs. It allows you to add an unlimited number of RSS feeds, updates them automatically, and adds new entries to the common stream.
+
+## Objectives
+This pet project was my playground for mastering MVC architecture and reactivity in JavaScript without frameworks. I focused on using the Proxy API ([on-change](https://www.npmjs.com/package/on-change)) for reactivity and directly manipulating the DOM. It was a great learning experience in handling network issues and avoiding feed duplication, enhancing my core JavaScript skills.
+
+[https://rss-reader.ivankalachikov.vercel.app/](https://rss-reader.ivankalachikov.vercel.app/)
 
 ---
 ### Hexlet tests and linter status:
